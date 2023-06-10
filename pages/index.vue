@@ -11,7 +11,7 @@ const allCourses = await getAllCoursesForHomepage();
                 <div class="flex items-center gap-20 px-[124px] pb-[180px] pt-[120px]">
                     <div class="gap flex flex-col gap-3">
                         <div class="">
-                            <h2 class="text-[48px] font-semibold text-white">Selamat Datang di PojoKoding</h2>
+                            <h2 class="text-[48px] font-semibold text-white">Selamat Datang di Pojokoding</h2>
                             <p class="text-white">Belajar tentang pengrograman tanpa mengeluarkan uang sepeser pun. Daftar sekarang!</p>
                         </div>
                         <NuxtLink to="/daftar" class="btn btn-primary">Daftar</NuxtLink>
