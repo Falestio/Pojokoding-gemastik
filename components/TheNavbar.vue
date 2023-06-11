@@ -5,11 +5,13 @@
         <div class="flex">
           <!-- <NuxtLink to="/katalog-kursus" class="px-4 btn btn-ghost">Katalog Kursus</NuxtLink> -->
           <NuxtLink to="/kontak" class="px-4 btn btn-ghost">Hubungi Kami</NuxtLink>
+          <!-- TODO: pisahkan kursusku dan akunku di dashboard -->
           <NuxtLink to="/dashboard" class="px-4 btn btn-ghost">Dashboard</NuxtLink>
         </div>
         <div class="h-6 w-px bg-[#E384FF]"></div>
         <div v-if="currentUser" class="flex items-center gap-2">
           <img :src="currentUser.photoURL" alt="Profile Picture" class="h-8 w-8 rounded-full">
+          <!-- TODO: tampilkan logout sebagai dropdown ketika user mengklik  -->
           <button @click="handleLogout" class="btn btn-primary">Logout</button>
         </div>
         <div v-else class="flex items-center gap-2">

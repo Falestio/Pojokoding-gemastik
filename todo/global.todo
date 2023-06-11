@@ -1,2 +1,12 @@
 - [] responsive design
+- [] protected routes
 - [] use pinia for cleaner code
+    - [] saat selesai mengerjakan quiz atau latihan, update data sidebar langsung
+    - [] saat selesai mengerjakan quiz atau latihan, tampilkan notifikasi
+- [] deploy judge0 https di IdCloudhost
+- [] analisis performa dan skalabilitas judge0 diserver IdCloudhost
+- [] buat course yang bsia mengetest user
+- [] bikin assesement buat user
+- [] achieve global ui uniqueness
+- [] add mermaid compability to shows diagrams
+- [] desain footer

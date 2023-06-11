@@ -1,4 +1,6 @@
 <script setup>
+// TODO: make sure its crawable by google
+
 import { getContentData } from "@/utils/content/getContentData";
 import { getProgressOneCourse } from "@/utils/progress/getProgressOneCourse"
 
@@ -7,7 +9,7 @@ const currentUser = useCurrentUser()
 definePageMeta({
     layout: "empty",
 });
- 
+
 const route = useRoute();
 const contentSlug = route.params.content;
 const courseSlug = route.params.course;

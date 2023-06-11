@@ -7,6 +7,7 @@ import { saveProgress } from "@/utils/progress/saveProgress";
 
 const currentUser = useCurrentUser();
 const props = defineProps(["contentData", "sidebarContent"]);
+// TODO: dynamic language highlighting extensions load, tergantung dari data cms
 const extensions = [python(), oneDark];
 
 const code = ref(props.contentData.startingCode);
@@ -42,8 +43,12 @@ async function handleSaveProgress() {
                 <div class="flex">
                     <div class="w-1/2">
                         <h2 class="text-2xl font-bold mb-4">{{ contentData.title }}</h2>
+                        <!-- TODO: Markdown compability in prompt -->
                         <p class="text-lg">{{ contentData.prompt }}</p>
                         <div class="grid gap-4 mr-4 mt-4">
+                            <!-- TODO: Tampilkan code output, pada setiap test case -->
+                            <!-- TODO: tampikan sampel input lebih jelas dengan menampilkannya sebagai parameter pada fungsi -->
+                            <!-- TODO: Tampilkan animasi loading ketika sedang menjalankan kode  -->
                             <div v-for="testCase in testCases" :key="testCase._key" class="rounded-lg shadow-md p-4 relative border border-slate-700">
                                 <div v-if="testCase.status == 'success'" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                                 <div v-if="testCase.status == 'failed'" class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
@@ -60,8 +65,8 @@ async function handleSaveProgress() {
                                     </div>
                                 </div>
                                 <div v-if="testCase.status" class="mt-4">
-                                    <span v-if="testCase.status == 'success'" class="px-3 py-2 bg-green-200 text-green-800 rounded-md">Berhasil</span>
-                                    <span v-if="testCase.status == 'failed'" class="px-3 py-2 bg-red-200 text-red-800 rounded-md">Gagal</span>
+                                    <span v-if="testCase.status == 'success'" class="badge badge-md badge-success">Berhasil</span>
+                                    <span v-if="testCase.status == 'failed'" class="badge badge-md badge-error">Gagal</span>
                                 </div>
                             </div>
                         </div>

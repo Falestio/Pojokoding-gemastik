@@ -16,9 +16,6 @@ async function handleChangeName() {
     await changeName(newName.value, currentUser.value.displayName);
 }
 
-// Handle upload profile picture
-// TODO: File input Validation
-// TODO: Photo crop
 const newProfilePictureImage = ref(null);
 const newProfilePictureImageUrl = ref(null);
 
@@ -49,7 +46,8 @@ function closeModal() {
 }
 
 // Create Review
-const rating = ref(null);
+// TODO: rating empty states
+const rating = ref(0);
 const review = ref("");
 
 async function handleCreateReview(courseId) {
@@ -98,18 +96,24 @@ watch(currentUser, async (newValue, oldValue) => {
 
 <template>
     <div class="">
+        <!-- TODO: Sapa user -->
         <div class="bg-[#191825] px-[80px] py-[20px] flex flex-col gap-6 h-full">
+            <!-- TODO: Perbaiki active state dari tabs menajdi boxed tabs daisy ui  -->
             <div class="tabs">
                 <button class="btn btn-ghost tab" :class="{ 'tab-active': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursusku</button>
                 <div class="divider divider-horizontal"></div>
                 <button class="btn btn-ghost tab" :class="{ 'tab-active': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Akunku</button>
             </div>
+            <!-- Kursusku -->
+            <!-- TODO: Rekomendasi kursus -->
+            <!-- TODO: empty states -->
             <div v-show="activeTab === 'kursusku'" class="flex flex-col gap-3">
                 <h1 class="text-2xl font-medium">Lanjutkan belajar</h1>
                 <div class="flex flex-col gap-3">
                     <div class="flex justify-between items-center border border-second px-6 py-4">
                         <template v-for="progress in usersProgress" :key="progress._id">
                             <div class="flex gap-4">
+                                <!-- TODO: ganti warna progress -->
                                 <div class="radial-progress" :style="`--value: ${progress.completionPercentage}`">{{ progress.completionPercentage }}%</div>
                                 <div class="flex flex-col">
                                     <NuxtLink :to="`/${progress.slug.current}`" class="text-2xl font-bold">{{ progress.title }}</NuxtLink>
@@ -118,6 +122,7 @@ watch(currentUser, async (newValue, oldValue) => {
                                 </div>
                             </div>
                             <div>
+                                <!-- TODO: ganti tombol todo menjadi mengikuti best practice ux -->
                                 <button @click="handleGetReview(progress._id)" onclick="my_modal_1.showModal()" class="bg-secondary px-10 py-1 rounded-sm text-background font-medium text-sm mr-2">Beri Ulasan</button>
                                 <dialog id="my_modal_1" class="modal text-slate-100">
                                     <form method="dialog" class="modal-box w-3/6" @submit.prevent>
@@ -144,11 +149,12 @@ watch(currentUser, async (newValue, oldValue) => {
                                             </div>
                                             <button @click="handleCreateReview(progress._id)" class="btn btn-primary">Kirim</button>
                                         </div>
+                                        <!-- TODO: Posisikan card agak diatas -->
                                         <div v-if="reviewPreview" class="w-full">
                                             <!-- <pre>
                                                 {{ reviewPreview }}
                                             </pre> -->
-                                            <h2 class="text-xl font-bold mb-">Ulasan Anda</h2>
+                                            <h2 class="text-xl font-bold mb-4">Ulasan Anda</h2>
                                             <div class="flex justify-between items-start w-full">
                                                 <div class="flex gap-3 items-center">
                                                     <div class="avatar">
@@ -175,6 +181,8 @@ watch(currentUser, async (newValue, oldValue) => {
                                                     <!-- TODO: Bug: if user enter edit mode, then change rating, then comeback to 
                                                     preview mode the rating will preserve. the rating should go back to the value
                                                     before user enter edit mode -->
+                                                    <!-- TODO: button tidak berganti warna ketika di hover -->
+                                                    <!-- TODO: taruh button di pojok kanan atas card -->
                                                     <button @click="openEditReview()" class="btn btn-ghost btn-sm">
                                                         <Icon name="mdi:lead-pencil"></Icon>
                                                     </button>
@@ -200,7 +208,7 @@ watch(currentUser, async (newValue, oldValue) => {
                                         <button>close</button>
                                     </form>
                                 </dialog>
-                                <!-- TODO: Add First article property  -->
+                                <!-- TODO: Add First article property in course sehingga dapat mengarahkan pengunjung ke artikel pertama  -->
                                 <NuxtLink :to="`/${progress.slug.current}/pengenalan-git`" class="bg-primary px-10 py-1 rounded-sm text-background font-medium text-sm">Lanjut belajar</NuxtLink>
                             </div>
                         </template>
@@ -212,6 +220,7 @@ watch(currentUser, async (newValue, oldValue) => {
                     <div class="w-64 h-52 rounded-full relative">
                         <img :src="currentUser.photoURL" alt="profile-pic" class="rounded-full w-full h-full" />
                         <div class="dropdown dropdown-end absolute bottom-0 right-0 mb-2 mr-2">
+                            <!-- TODO: beri warna dan bg, serta efek hover -->  
                             <label tabindex="0" class="btn btn-ghost btn-circle btn-md">
                                 <Icon name="mdi:lead-pencil" size="1.5em"></Icon>
                             </label>
@@ -222,12 +231,16 @@ watch(currentUser, async (newValue, oldValue) => {
                                         <input @change="handleFileChange" type="file" class="absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" />
                                     </div>
                                 </li>
+                                <!-- TODO: Integrasi fitur hapus akun -->
                                 <li><a>Hapus Foto</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="w-full flex flex-col gap-4">
                         <div class="flex flex-col gap-1">
+                            <!-- TODO: tampilkan nama dari user disini -->
+                            <!-- TODO: standardisasi ui menggunakan daisyui -->
+                            <!-- TODO: ganti kata sandi -->
                             <p>Nama:</p>
                             <div class="flex border border-second rounded-lg pl-4">
                                 <input v-model="newName" type="text" class="w-full bg-inherit" />
@@ -254,6 +267,9 @@ watch(currentUser, async (newValue, oldValue) => {
                 </div>
             </div>
 
+            <!-- TODO: add crop image functionality -->
+            <!-- TODO: image size validation -->
+            <!-- TODO: image format validation -->
             <!-- Modal -->
             <div v-if="openProfilePictureModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

@@ -49,8 +49,13 @@ async function handleUpdateComment(commentId) {
 
 <template>
     <div>
+        <!-- TODO: Revisi UI, buat agar lebih mirip ui di stackoverflow -->
+        <!-- TODO: Integrasi fitur Reply (Balasan) -->
+        <!-- TODO: tampilkan notifikasi berhasil melakukan crud -->
         <div class="w-[700px]">
+            
             <!-- Submit komentar -->
+            <!-- TODO: Hapus value yang ada di textarea ketika klik tombol submit -->
             <div class="w-full mx-auto my-4 border rounded">
                 <form @submit.prevent="submitDiscussion" class="shadow-md rounded p-4 mb-4">
                     <div class="mb-4 flex items-center gap-3">
@@ -61,6 +66,7 @@ async function handleUpdateComment(commentId) {
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-bold mb-2" for="discussion"> Discussion </label>
+                        <!-- TODO: Add live markdown editor support  -->
                         <textarea v-model="newDiscussion" id="discussion" class="textarea textarea-bordered w-full" required></textarea>
                     </div>
                     <div class="flex items-center justify-between">
@@ -70,6 +76,10 @@ async function handleUpdateComment(commentId) {
             </div>
 
             <!-- Lihat semua komentar -->
+            <!-- TODO: integrasi fitur upvtoe -->
+            <!-- TODO: Fetch top 3 diskusi dengan banyak upvote -->
+            <!-- TODO: Paginated fetch -->
+            <!-- TODO: tampilkan komentar sendiri paling atas -->
             <div>
                 <button @click="handleGetAllComment()" class="btn btn-primary my-4">Lihat komentar</button>
                 <div class="space-y-4">
@@ -84,7 +94,9 @@ async function handleUpdateComment(commentId) {
                                     <Icon name="mdi:dots-vertical" v-if="comment.userId === currentUser.uid"></Icon>
                                 </label>
                                 <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    <!-- TODO: ketika ingin edit diskusi tampilkan value dari diskusi sebelumnya di textarea -->
                                     <li @click="openEditMode(comment.id)" class="btn btn-ghost">Edit</li>
+                                    <!-- TODO: ketika ingin menghapus diskusi tampilkan "are you sure"  -->
                                     <li @click="handleDeleteComment(comment.id)" class="btn btn-ghost">Hapus</li>
                                 </ul>
                             </div>

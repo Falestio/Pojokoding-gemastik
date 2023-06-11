@@ -1,25 +1,23 @@
 <script setup>
 import { renderMarkdown } from "@/utils/content/renderMarkdown";
 import { generateToc } from "@/utils/content/generateToc";
-const currentUser = useCurrentUser()
+const currentUser = useCurrentUser();
 
 // TODO: Check is  it working or not
 // Cek apakah plugin pada prisma bekerja atau tidak
 // TODO: fungsi yang penting adalah line highliht
-    // bagaimana cara mengintegrasi sanity dan prisma
-    // sehingga penulis dapat menspesifikasikan dimana line highlight dari sanity
+// bagaimana cara mengintegrasi sanity dan prisma
+// sehingga penulis dapat menspesifikasikan dimana line highlight dari sanity
 head: {
     script: [
-        { 
+        {
             type: "module",
-            src: "@/assets/js/prism.js"
-        }
-    ]
+            src: "@/assets/js/prism.js",
+        },
+    ];
 }
 
-const props = defineProps([
-    'contentData', 'sidebarContent'
-])
+const props = defineProps(["contentData", "sidebarContent"]);
 
 const renderedArticle = renderMarkdown(props.contentData.markdown);
 
@@ -27,11 +25,12 @@ const renderedArticle = renderMarkdown(props.contentData.markdown);
 const toc = generateToc(renderedArticle);
 
 // Quiz
-const quizData = props.contentData.quiz
+const quizData = props.contentData.quiz;
 </script>
 
 <template>
     <div>
+        <!-- TODO: Diawal artikel tampilkan syarat apa saja yang harus diselesaikan untu kmenyelesaikan artikel -->
         <div class="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content flex flex-col p-8">
@@ -64,5 +63,4 @@ const quizData = props.contentData.quiz
 </template>
 
 <style >
-
 </style>
