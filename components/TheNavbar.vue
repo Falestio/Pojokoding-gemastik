@@ -1,5 +1,5 @@
 <template>
-    <header class="flex items-center justify-between px-4 py-2 bg-[#191825] text-white sm:px-8">
+    <header class="flex items-center justify-between px-4 py-2 bg-[#191825] border-b border-gray-700 text-white sm:px-8">
       <NuxtLink to="/" class="text-2xl sm:text-3xl font-bold text-primary drop-shadow-md">Pojokoding</NuxtLink>
       <div class="hidden sm:flex items-center gap-6">
         <div class="flex">

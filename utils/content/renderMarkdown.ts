@@ -8,7 +8,10 @@ export const renderMarkdown = (markdown: string) => {
         linkify: true,
         typographer: true,
     })
-    md.use(prism)
+    md.use(prism, {
+        highlightInlineCode: true,
+    })
+
     md.use(markdownItAnchor)
 
     const renderedArticle = md.render(markdown)

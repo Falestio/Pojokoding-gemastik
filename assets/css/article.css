@@ -67,6 +67,8 @@
     @apply bg-gray-600;
 }
 
+/* PrismJS 1.29.0
+https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+git+http+java+markup-templating+php+python+typescript&plugins=line-highlight+line-numbers */
 code[class*="language-"],
 pre[class*="language-"] {
     color: #ccc;
@@ -162,4 +164,8 @@ pre[class*="language-"] {
 }
 .token.inserted {
     color: green;
+}
+pre[data-line] {
+    position: relative;
+    padding: 1em 0 1em 3em;
 }

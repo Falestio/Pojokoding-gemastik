@@ -3,27 +3,36 @@ import { createComment } from "@/utils/comment/createComment";
 import { readAllComment } from "@/utils/comment/readAllComment";
 import { deleteComment } from "@/utils/comment/deleteComment";
 import { updateComment } from "@/utils/comment/updateComment";
+import { upvoteComment } from "@/utils/comment/upvoteComment";
 
+// Menerima property data artikel
 const props = defineProps(["contentData"]);
 const currentUser = useCurrentUser()
 
+// Menampung value inputan komentar baru
 const newDiscussion = ref("");
 
+// Create satu komentar
 async function handleCreateComment() {
     await createComment(newDiscussion.value, props.contentData._id, currentUser.value.uid, currentUser.value.displayName, currentUser.value.photoURL);
     await handleGetAllComment();
+    newDiscussion.value = ""
 } 
 
+// Mendapatkan semua komentar
+// Triggered: Ketika user mengklik tombol tampilkan semua komentar
 const allCommentInContent = ref(null);
 async function handleGetAllComment() {
     allCommentInContent.value = await readAllComment(props.contentData._id);
 }
 
+// Menghapus satu komentar
 async function handleDeleteComment(commentId) {
     await deleteComment(commentId);
     await handleGetAllComment();
 }
 
+// Mengupdate satu komentar
 const editingCommentValue = ref("");
 const editMode = ref(false)
 const editModeCommentId = ref("")
@@ -45,6 +54,12 @@ async function handleUpdateComment(commentId) {
     await handleGetAllComment()
 }
 
+// Melakukan Upvote
+async function handleUpvoteComment(commentId) {
+    await upvoteComment(commentId)
+    await handleGetAllComment()
+}
+
 </script>
 
 <template>
@@ -55,7 +70,6 @@ async function handleUpdateComment(commentId) {
         <div class="w-[700px]">
             
             <!-- Submit komentar -->
-            <!-- TODO: Hapus value yang ada di textarea ketika klik tombol submit -->
             <div class="w-full mx-auto my-4 border rounded">
                 <form @submit.prevent="submitDiscussion" class="shadow-md rounded p-4 mb-4">
                     <div class="mb-4 flex items-center gap-3">
@@ -76,7 +90,7 @@ async function handleUpdateComment(commentId) {
             </div>
 
             <!-- Lihat semua komentar -->
-            <!-- TODO: integrasi fitur upvtoe -->
+            <!-- TODO: Prevent user yang sama untuk upvote lebih dari 1 kali -->
             <!-- TODO: Fetch top 3 diskusi dengan banyak upvote -->
             <!-- TODO: Paginated fetch -->
             <!-- TODO: tampilkan komentar sendiri paling atas -->
@@ -107,7 +121,7 @@ async function handleUpdateComment(commentId) {
                                 <span class="text-xs text-gray-500">{{ new Date(comment.createdAt.seconds * 1000).toLocaleString() }}</span>
                                 <button class="btn btn-ghost btn-sm">Balas</button>
                             </div>
-                            <button class="text-sm">Upvote ({{ comment.upvote }})</button>
+                            <button @click="handleUpvoteComment(comment.id)" class="text-sm">Upvote ({{ comment.upvote }})</button>
                         </div>
                         <div v-if="editMode && editModeCommentId === comment.id" class="mt-2">
                             <textarea v-model="editingCommentValue" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none" rows="4" placeholder="Update your comment"></textarea>
