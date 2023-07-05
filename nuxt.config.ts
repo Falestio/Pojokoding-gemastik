@@ -6,9 +6,14 @@ const allFilesInsideFolder = (path: string) => {
 }
 
 export default defineNuxtConfig({
-    modules: ["@nuxtjs/tailwindcss", "@nuxtjs/sanity", "nuxt-icon"],
+    modules: ["@nuxtjs/tailwindcss", "@nuxtjs/sanity", "nuxt-icon", '@tailvue/nuxt',],
 
     css: allFilesInsideFolder("assets/css/"),
+
+    build:{
+        // vue-toastification - old commonjs module 
+        transpile: ['vue-toastification'],
+    },
 
     sanity: {
         projectId: "diimhezu",

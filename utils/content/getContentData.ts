@@ -3,7 +3,7 @@ export const getContentData = async (contentSlug: string, courseSlug: string) =>
     *[
         _type == "content" &&
         slug.current =="${contentSlug}" &&
-        course._ref in 
+        course._ref in
             *[_type == "course" && slug.current == "${courseSlug}"]._id
     ][0]{
         ..., 

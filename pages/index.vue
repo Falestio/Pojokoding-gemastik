@@ -6,7 +6,7 @@ const allCourses = await getAllCoursesForHomepage();
 
 <template>
     <div>
-        <!-- TODO: Research first section best pratices -->
+        <!-- TODO: UI: Research first section best pratices -->
         <main class="">
             <div class="">
                 <div class="flex items-center gap-20 px-[124px] pb-[180px] pt-[120px]">
@@ -25,7 +25,7 @@ const allCourses = await getAllCoursesForHomepage();
                 <div class="flex gap-8">
                     <template v-for="course in allCourses" :key="course._id">
                         <div class="card bg-slate-800 shadow-xl">
-                            <!-- TODO: tentukan aspect ratio dari gambar -->
+                            <!-- TODO: UI: tentukan aspect ratio dari gambar -->
                             <figure>
                                 <img class="w-full h-48 object-cover" :src="course.mainImage" alt="Shoes" />
                             </figure>
@@ -41,7 +41,7 @@ const allCourses = await getAllCoursesForHomepage();
                     </template>
                 </div>
             </div>
-            <!-- TODO: standardisasi desain dari review menggunakan daisyui -->
+            <!-- TODO: UI: standardisasi desain dari review menggunakan daisyui -->
             <div class="flex flex-col gap-6 px-[80px] pb-16 text-white">
                 <h3 class="text-2xl font-medium">Testimoni dari alumni kursus</h3>
                 <div class="flex flex-col gap-6">

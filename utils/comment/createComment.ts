@@ -11,7 +11,8 @@ export const createComment = async (newCommentContent: string, articleId: string
         updatedAt: new Date(),
         username: username,
         photoUrl: photoUrl,
-        upvote: 0
+        upvote: 0,
+        upvotedUsers: []
     }
 
     // @ts-ignore

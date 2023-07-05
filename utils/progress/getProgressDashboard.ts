@@ -54,5 +54,10 @@ export const getProgressDashboard = async (userId: string) => {
 
     console.log("Course data FINAL: ", courseData);
 
-    return courseData;
+    if(courseData.length == 0){
+        return null   
+    } else {
+        return courseData
+    }
+
 };

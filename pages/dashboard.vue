@@ -1,20 +1,48 @@
 <script setup>
+import { useToast } from "vue-toastification";
 import { changeName } from "@/utils/user/changeName";
 import { getProgressDashboard } from "~/utils/progress/getProgressDashboard";
 import { uploadProfilePicture } from "@/utils/user/uploadProfilePicture";
 import { createReview } from "@/utils/course-review/createReview";
 import { readOneReview } from "@/utils/course-review/readOneReview";
 import { editReview } from "@/utils/course-review/editReview";
-import { deleteReview } from "@/utils/course-review/deleteReview"
+import { deleteReview } from "@/utils/course-review/deleteReview";
+import { getRecommendedCourses } from "@/utils/content/getRecommendedCourses";
+import { getLatestUserProgress } from "@/utils/progress/getLatestUserProgress";
 
 const activeTab = ref("kursusku");
 const currentUser = useCurrentUser();
+const toast = useToast()
 
-// TODO: jika ingin menampilkan display name, currentUser belum tersedia
-const newName = ref("your name");
+// Get users progress
+const usersProgress = ref(null);
+async function handleGetUsersProgress() {
+    usersProgress.value = await getProgressDashboard(currentUser.value.uid);
+    if (!usersProgress.value) {
+        console.log("users progress is falsy");
+    } else {
+        console.log("users progress is truthy");
+    }
+}
+
+const newName = ref(null);
 async function handleChangeName() {
     await changeName(newName.value, currentUser.value.displayName);
 }
+
+if (currentUser.value) {
+    await handleGetUsersProgress();
+    newName.value = currentUser.value.displayName;
+}
+
+watch(currentUser, async (newValue, oldValue) => {
+    console.log("user updated from watch()");
+    await handleGetUsersProgress();
+    newName.value = currentUser.value.displayName;
+});
+
+// Get Recommended Courses
+const recommendedCourses = await getRecommendedCourses();
 
 const newProfilePictureImage = ref(null);
 const newProfilePictureImageUrl = ref(null);
@@ -46,12 +74,16 @@ function closeModal() {
 }
 
 // Create Review
-// TODO: rating empty states
 const rating = ref(0);
 const review = ref("");
+const closeReviewDialog = ref(null)
 
 async function handleCreateReview(courseId) {
     await createReview(currentUser.value, review.value, rating.value, courseId);
+    closeReviewDialog.value.$el.click()
+    toast.success("Berhasil menambah review", {
+        timeout: 2000,
+    });
 }
 
 // Read Review
@@ -69,52 +101,50 @@ function openEditReview() {
     newReviewContent.value = reviewPreview.value.content;
 }
 
-async function handleEditReview(reviewId){
-    await editReview(reviewId, newReviewContent.value)
+async function handleEditReview(reviewId) {
+    await editReview(reviewId, newReviewContent.value);
 }
 
 // Delete Review
-async function handleDeleteReview(reviewId){
-    await deleteReview(reviewId)
+async function handleDeleteReview(reviewId) {
+    await deleteReview(reviewId);
+    closeReviewDialog.value.$el.click()
+    toast.success("Berhasil menghapus review", {
+        timeout: 2000,
+    })
 }
 
-// Get users progress
-const usersProgress = ref(null);
-async function handleGetUsersProgress() {
-    usersProgress.value = await getProgressDashboard(currentUser.value.uid);
-}
-
-if (currentUser.value) {
-    await handleGetUsersProgress();
-}
-
-watch(currentUser, async (newValue, oldValue) => {
-    console.log("user updated from watch()");
-    await handleGetUsersProgress();
-});
+// Navigate user to the latest progress
+async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
+    const kontenTerakhir = await getLatestUserProgress(currentUser.value.uid, courseId)
+    console.log(courseSlug)
+    navigateTo(`/${courseSlug}/${kontenTerakhir.slug.current}`)
+}   
 </script>
 
 <template>
-    <div class="">
-        <!-- TODO: Sapa user -->
+    <div>
         <div class="bg-[#191825] px-[80px] py-[20px] flex flex-col gap-6 h-full">
-            <!-- TODO: Perbaiki active state dari tabs menajdi boxed tabs daisy ui  -->
             <div class="tabs">
-                <button class="btn btn-ghost tab" :class="{ 'tab-active': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursusku</button>
+                <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursusku</button>
                 <div class="divider divider-horizontal"></div>
-                <button class="btn btn-ghost tab" :class="{ 'tab-active': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Akunku</button>
+                <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Akunku</button>
             </div>
             <!-- Kursusku -->
-            <!-- TODO: Rekomendasi kursus -->
-            <!-- TODO: empty states -->
             <div v-show="activeTab === 'kursusku'" class="flex flex-col gap-3">
-                <h1 class="text-2xl font-medium">Lanjutkan belajar</h1>
+                <div class="mb-4">
+                    <p v-if="currentUser" class="text-5xl">👋 Selamat Datang {{ currentUser.displayName }}</p>
+                </div>
+
+                <h2 class="text-2xl font-medium">Kemajuan Belajar</h2>
                 <div class="flex flex-col gap-3">
-                    <div class="flex justify-between items-center border border-second px-6 py-4">
+                    <div v-if="!usersProgress" class="border rounded border-gray-600 px-6 py-4">
+                        <p class="text-2xl">Anda belum memulai kursus</p>
+                    </div>
+                    <div v-else class="flex justify-between items-center border rounded border-gray-600 px-6 py-4">
                         <template v-for="progress in usersProgress" :key="progress._id">
                             <div class="flex gap-4">
-                                <!-- TODO: ganti warna progress -->
-                                <div class="radial-progress" :style="`--value: ${progress.completionPercentage}`">{{ progress.completionPercentage }}%</div>
+                                <div class="radial-progress" :style="`--value: ${progress.completionPercentage}; --thickness: .6rem;`">{{ progress.completionPercentage }}%</div>
                                 <div class="flex flex-col">
                                     <NuxtLink :to="`/${progress.slug.current}`" class="text-2xl font-bold">{{ progress.title }}</NuxtLink>
                                     <p>Artikel {{ progress.finishedArticle }}/{{ progress.postCount }}</p>
@@ -122,7 +152,7 @@ watch(currentUser, async (newValue, oldValue) => {
                                 </div>
                             </div>
                             <div>
-                                <!-- TODO: ganti tombol todo menjadi mengikuti best practice ux -->
+                                <!-- TODO: UI: ganti tombol todo menjadi mengikuti best practice ux -->
                                 <button @click="handleGetReview(progress._id)" onclick="my_modal_1.showModal()" class="bg-secondary px-10 py-1 rounded-sm text-background font-medium text-sm mr-2">Beri Ulasan</button>
                                 <dialog id="my_modal_1" class="modal text-slate-100">
                                     <form method="dialog" class="modal-box w-3/6" @submit.prevent>
@@ -149,7 +179,7 @@ watch(currentUser, async (newValue, oldValue) => {
                                             </div>
                                             <button @click="handleCreateReview(progress._id)" class="btn btn-primary">Kirim</button>
                                         </div>
-                                        <!-- TODO: Posisikan card agak diatas -->
+                                        <!-- TODO: UI: Posisikan card agak diatas -->
                                         <div v-if="reviewPreview" class="w-full">
                                             <!-- <pre>
                                                 {{ reviewPreview }}
@@ -178,15 +208,12 @@ watch(currentUser, async (newValue, oldValue) => {
                                                     </div>
                                                 </div>
                                                 <div class="flex gap-2 items-center">
-                                                    <!-- TODO: Bug: if user enter edit mode, then change rating, then comeback to 
-                                                    preview mode the rating will preserve. the rating should go back to the value
-                                                    before user enter edit mode -->
-                                                    <!-- TODO: button tidak berganti warna ketika di hover -->
-                                                    <!-- TODO: taruh button di pojok kanan atas card -->
+                                                    <!-- TODO: BUG: if user enter edit mode, then change rating, then comeback to preview mode the rating will preserve. the rating should go back to the value before user enter edit mode -->
+                                                    <!-- TODO: UI: button tidak berganti warna ketika di hover -->
+                                                    <!-- TODO: UI: taruh button di pojok kanan atas card -->
                                                     <button @click="openEditReview()" class="btn btn-ghost btn-sm">
                                                         <Icon name="mdi:lead-pencil"></Icon>
                                                     </button>
-                                                    <!-- TODO: after deleting erase review and show review form -->
                                                     <button @click="handleDeleteReview(reviewPreview.id)" class="btn btn-ghost btn-sm">
                                                         <Icon name="mdi:trash-can-outline"></Icon>
                                                     </button>
@@ -205,14 +232,31 @@ watch(currentUser, async (newValue, oldValue) => {
                                         </div>
                                     </form>
                                     <form method="dialog" class="modal-backdrop">
-                                        <button>close</button>
+                                        <button ref="closeReviewDialog">close</button>
                                     </form>
                                 </dialog>
-                                <!-- TODO: Add First article property in course sehingga dapat mengarahkan pengunjung ke artikel pertama  -->
-                                <NuxtLink :to="`/${progress.slug.current}/pengenalan-git`" class="bg-primary px-10 py-1 rounded-sm text-background font-medium text-sm">Lanjut belajar</NuxtLink>
+                                <button @click="handleNavigateUserToTheLatestProgress(progress._id, progress.slug.current)" class="bg-primary px-10 py-1 rounded-sm text-background font-medium text-sm">Lanjut belajar</button>
                             </div>
                         </template>
                     </div>
+                </div>
+                <h2 class="text-2xl font-medium">Rekomendasi Kursus</h2>
+                <div class="flex gap-8">
+                    <template v-for="course in recommendedCourses" :key="course._id">
+                        <div class="card bg-slate-800 shadow-xl">
+                            <figure>
+                                <img class="w-full h-48 object-cover" :src="course.mainImage" alt="Shoes" />
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{{ course.title }}</h2>
+                                <p>{{ course.shortDescription }}</p>
+                                <div class="badge badge-outline">{{ course.difficulty }}</div>
+                                <div class="card-actions justify-end">
+                                    <NuxtLink :to="`/${course.slug.current}`" class="btn btn-primary">Belajar sekarang</NuxtLink>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
             <div v-show="activeTab === 'akunku'">
@@ -220,8 +264,7 @@ watch(currentUser, async (newValue, oldValue) => {
                     <div class="w-64 h-52 rounded-full relative">
                         <img :src="currentUser.photoURL" alt="profile-pic" class="rounded-full w-full h-full" />
                         <div class="dropdown dropdown-end absolute bottom-0 right-0 mb-2 mr-2">
-                            <!-- TODO: beri warna dan bg, serta efek hover -->  
-                            <label tabindex="0" class="btn btn-ghost btn-circle btn-md">
+                            <label tabindex="0" class="btn btn-ghost btn-circle btn-sm hover:bg-slate-700">
                                 <Icon name="mdi:lead-pencil" size="1.5em"></Icon>
                             </label>
                             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -231,16 +274,15 @@ watch(currentUser, async (newValue, oldValue) => {
                                         <input @change="handleFileChange" type="file" class="absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" />
                                     </div>
                                 </li>
-                                <!-- TODO: Integrasi fitur hapus akun -->
+                                <!-- TODO: FUNC: Integrasi fitur hapus akun -->
                                 <li><a>Hapus Foto</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="w-full flex flex-col gap-4">
                         <div class="flex flex-col gap-1">
-                            <!-- TODO: tampilkan nama dari user disini -->
-                            <!-- TODO: standardisasi ui menggunakan daisyui -->
-                            <!-- TODO: ganti kata sandi -->
+                            <!-- TODO: UI: standardisasi ui menggunakan daisyui -->
+                            <!-- TODO: FUNC: ganti kata sandi -->
                             <p>Nama:</p>
                             <div class="flex border border-second rounded-lg pl-4">
                                 <input v-model="newName" type="text" class="w-full bg-inherit" />
@@ -267,9 +309,9 @@ watch(currentUser, async (newValue, oldValue) => {
                 </div>
             </div>
 
-            <!-- TODO: add crop image functionality -->
-            <!-- TODO: image size validation -->
-            <!-- TODO: image format validation -->
+            <!-- TODO: FUNC: add crop image functionality -->
+            <!-- TODO: FUNC: image size validation -->
+            <!-- TODO: FUNC: image format validation -->
             <!-- Modal -->
             <div v-if="openProfilePictureModal" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

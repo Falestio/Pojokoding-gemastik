@@ -60,7 +60,7 @@ async function handleSaveProgress() {
                                         <pre class="text-sm rounded p-2">{{ testCase.stdin }}</pre>
                                     </div>
                                     <div>
-                                        <h3 class="font-semibold">Expected Output:</h3>
+                                        <h3 class="font-semibold">Output yang diharapkan:</h3>
                                         <pre class="text-sm rounded p-2">{{ testCase.expectedOutput }}</pre>
                                     </div>
                                 </div>

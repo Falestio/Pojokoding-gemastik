@@ -1,5 +1,6 @@
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc, Timestamp } from "firebase/firestore"
 
+// TODO: prevent add progress twice
 export const saveProgress = async (userId: string, contentId: string, courseId: string, contentType: string, usersCode?: string) => {
   const { $db } = useNuxtApp()
 
@@ -8,7 +9,8 @@ export const saveProgress = async (userId: string, contentId: string, courseId: 
     contentId: contentId,
     courseId: courseId,
     type: contentType,
-    usersCode: usersCode || ""  // Add usersCode to the object, or empty string if it's undefined
+    usersCode: usersCode || "",
+    createdAt: Timestamp.fromDate(new Date())
   }
 
   console.log("New Progress Object", newProgress)

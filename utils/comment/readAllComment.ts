@@ -1,10 +1,14 @@
-import { collection, getDocs, query, where } from "@firebase/firestore"
+import { collection, getDocs, orderBy, query, startAfter, where, limit } from "@firebase/firestore"
 
-export const readAllComment = async (articleId: string) => {
+export const readAllComment = async (articleId: string, startAfterCursor = null) => {
     const { $db } = useNuxtApp()
-    // @ts-ignore
+    // @ts-ignore   
     const commentsRef = collection($db, "comments")
-    const q = query(commentsRef, where("articleId", "==", articleId))
+    let q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), limit(5));
+
+    if (startAfterCursor) {
+        q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), startAfter(startAfterCursor), limit(5));
+    }
 
     const querySnapshot = await getDocs(q)
 
@@ -17,6 +21,7 @@ export const readAllComment = async (articleId: string) => {
         })
     })
     
-
-    return comments
+    // return last document as the cursor for the next pagination
+    const cursor = querySnapshot.docs[querySnapshot.docs.length-1];
+    return { comments, cursor }
 }
