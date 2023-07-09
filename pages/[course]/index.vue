@@ -18,7 +18,7 @@ async function handleGetAllReview() {
 <template>
     <div class="mt-8">
         <div class="bg-[#191825] px-[80px] text-white flex">
-            <!-- TODO: fix layouting, follow best practices -->
+            <!-- TODO: UI: fix layouting, follow best practices -->
             <main class="flex w-7/12 flex-col gap-6">
                 <div class="flex flex-col">
                     <h2 class="text-5xl font-medium">{{ courseData.title }}</h2>
@@ -29,9 +29,9 @@ async function handleGetAllReview() {
                     <p>{{ courseData.learningObjectives }}</p>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <!-- TODO: display subcourses -->
+                    <!-- TODO: FUNC: display subcourses -->
                     <h2 class="text-2xl">Materi Kursus</h2>
-                    <!-- TODO: Calculate this dynamically -->
+                    <!-- TODO: !!!FUNC: Calculate this dynamically -->
                     <p>27 sections • 165 lectures • 24h 54m total length</p>
 
                     <ul class="space-y-4">
@@ -50,9 +50,9 @@ async function handleGetAllReview() {
                         {{ courseData.description }}
                     </div>
                 </div>
-                <!-- TODO: Standardized review ui menggunakan diasy -->
-                <!-- TODO: fix rating bug in readAllReview -->
-                <!-- TODO: fetch 3 reviews on page load -->
+                <!-- TODO: UI: Standardized review ui menggunakan diasy -->
+                <!-- TODO: !!!BUG: fix rating bug in readAllReview -->
+                <!-- TODO: !!!FUNC: fetch 3 reviews on page load -->
                 <div class="flex flex-col gap-2">
                     <h2 class="text-2xl">Review</h2>
                     <button v-if="!allReviewInCourse" @click="handleGetAllReview()" class="btn">Tampilkan Review</button>
@@ -73,8 +73,8 @@ async function handleGetAllReview() {
                     </div>
                 </div>
             </main>
-            <!-- TODO: Tampilkan judul dan informasi kecil lainnya di card ini -->
-            <!-- TODO: make it sticky -->
+            <!-- TODO: UI: Tampilkan judul dan informasi kecil lainnya di card ini -->
+            <!-- TODO: UI: make it sticky -->
             <div class="w-4/12 h-auto">
                 <img :src="courseData.image" alt="gambar" class="bg-slate-400 h-64 w-full" />
                 <div class="px-4 text-xl py-2">

@@ -1,14 +1,14 @@
 <script setup>
 import { userRegister } from '@/utils/user/userRegsiter';
 
-// TODO: form validation
-// TODO: captcha security
-// TODO: pemberitahuan email sudah digunakan
-// TODO: Google auth
-// TODO: kebijakan privasi dan syarat ketentuan
+// TODO: FUNC : form validation
+// TODO: FUNC : captcha security
+// TODO: FUNC : pemberitahuan email sudah digunakan
+// TODO: FUNC : Google auth
+// TODO: FUNC : kebijakan privasi dan syarat ketentuan
 const email = ref('')
 
-// TODO: Konfirmasi password
+// TODO: FUNC : Konfirmasi password
 const password = ref('')
 const username = ref('')
 
@@ -37,7 +37,7 @@ async function handleRegister(){
                             </label>
                             <input v-model="email" type="email" placeholder="Masukan Email Anda" class="input input-bordered input-primary w-full max-w-xs" />
                         </div>
-                        <!-- TODO: membuat kata sandi visible toggle -->
+                        <!-- TODO: UI : membuat kata sandi visible toggle -->
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Password</span>

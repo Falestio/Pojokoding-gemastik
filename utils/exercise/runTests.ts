@@ -1,42 +1,52 @@
-import { execCode } from './execCode';
+import { execCode } from "./execCode";
 
 export const runTests = async (usersCode: string, testCases: any[], langId: number): Promise<any[]> => {
-    console.log("runTest(): ",usersCode, testCases, langId)
-  
+    console.log("runTest(): ", usersCode, testCases, langId);
+
     const sourceCodeWithInput = testCases.map((testCase) => {
-      return {
-        language_id: langId,
-        source_code: usersCode,
-        stdin: testCase.stdin,
-      };
+        return {
+            language_id: langId,
+            source_code: usersCode,
+            stdin: testCase.stdin,
+        };
     });
 
-    console.log("sourceCodeWithInput: ",sourceCodeWithInput)
-    
+    console.log("sourceCodeWithInput: ", sourceCodeWithInput);
+
     const submissions = await execCode(sourceCodeWithInput);
 
-    console.log("submissions: ",submissions)
+    console.log("submissions: ", submissions);
 
     const results = submissions.map((submission, index) => {
-      const testCase = testCases[index];
-      const { stdout, stderr } = submission;
-      
-      console.log("stdout: ",stdout)
-      console.log("expected output: ", testCase.expectedOutput)
+        const testCase = testCases[index];
+        const { stdout, stderr } = submission;
 
-      if (stdout === testCase.expectedOutput && !stderr) {
-        testCase.status = 'success';
-      } else {
-        testCase.status = 'failed';
-      }
-  
-      return testCase;
+        console.log("stdout: ", stdout);
+        console.log("expected output: ", testCase.expectedOutput);
+        console.log("stderr: ", stderr);
+
+        if (stdout === testCase.expectedOutput && !stderr) {
+            console.log("The test case is success")
+            console.log(!!stderr)
+            testCase.status = "success";
+        } else {
+            console.log("The test case is failed")
+            console.log(!!stderr)
+            testCase.status = "failed";
+        }
+
+        // Include stdout and stderr in the result
+        return {
+            ...testCase,
+            stdout,
+            stderr,
+        };
     });
 
-    console.log("results: ",results)
-  
+    console.log("results: ", results);
+
     return results;
-  }
+};
 
 /*
 baut fungsi runTests yang menerima parameter usersCode dan testCases

@@ -1,5 +1,5 @@
 <script setup>
-// TODO: Sama seperti daftar
+// TODO: FUNC : Sama seperti daftar
 import { userLogin } from '@/utils/user/userLogin' 
 
 const email = ref('')
@@ -9,7 +9,7 @@ async function handleUserLogin(){
     await userLogin(email.value, password.value)
     navigateTo('/dashboard')
 }
-// TODO: lupa password
+// TODO: FUNC : lupa password
 
 </script>
 

@@ -1,27 +1,42 @@
 <script setup>
 import { Codemirror } from "vue-codemirror";
 import { python } from "@codemirror/lang-python";
+import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { runTests } from "@/utils/exercise/runTests";
 import { saveProgress } from "@/utils/progress/saveProgress";
+import { renderMarkdown } from "@/utils/content/renderMarkdown";
 
 const currentUser = useCurrentUser();
 const props = defineProps(["contentData", "sidebarContent"]);
-// TODO: dynamic language highlighting extensions load, tergantung dari data cms
-const extensions = [python(), oneDark];
+
+const promptHtml = renderMarkdown(props.contentData.prompt);
+
+function getExtensions() {
+    if (props.contentData.languageConfig.languageName == "javascript") {
+        return [javascript(), oneDark];
+    }
+
+    if (props.contentData.languageConfig.languageName == "python") {
+        return [python(), oneDark];
+    }
+}
 
 const code = ref(props.contentData.startingCode);
 const compileCode = ref(props.contentData.compileCode);
-
 const testCases = ref(props.contentData.testCases);
-
 const stderr = ref("");
-
 const stdout = ref("");
 
 async function handleRunTests() {
     const compilableCode = compileCode.value + "\n\n" + code.value;
-    testCases.value = await runTests(compilableCode, testCases.value, props.contentData.lang);
+    // make every status in testCases become loading
+    testCases.value = testCases.value.map((testCase) => ({ ...testCase, status: "loading" }));
+
+    // run the tests and assign the result to testCases.value
+    testCases.value = await runTests(compilableCode, testCases.value, props.contentData.languageConfig.languageId);
+
+    console.log("Stderr value is", !!testCases.value.stderr)
 
     if (testCases.value.every((testCase) => testCase.status === "success")) {
         await handleSaveProgress();
@@ -42,26 +57,37 @@ async function handleSaveProgress() {
 
                 <div class="flex">
                     <div class="w-1/2">
-                        <h2 class="text-2xl font-bold mb-4">{{ contentData.title }}</h2>
-                        <!-- TODO: Markdown compability in prompt -->
-                        <p class="text-lg">{{ contentData.prompt }}</p>
+                        <div class="mr-4">
+                            <h2 class="text-2xl font-bold mb-4">{{ contentData.title }}</h2>
+                            <div class="article" v-html="promptHtml"></div>
+                        </div>
                         <div class="grid gap-4 mr-4 mt-4">
-                            <!-- TODO: Tampilkan code output, pada setiap test case -->
-                            <!-- TODO: tampikan sampel input lebih jelas dengan menampilkannya sebagai parameter pada fungsi -->
-                            <!-- TODO: Tampilkan animasi loading ketika sedang menjalankan kode  -->
                             <div v-for="testCase in testCases" :key="testCase._key" class="rounded-lg shadow-md p-4 relative border border-slate-700">
                                 <div v-if="testCase.status == 'success'" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                                 <div v-if="testCase.status == 'failed'" class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
+                                <div v-if="testCase.status == 'loading'" class="absolute top-0 left-0 h-2 w-full align-end p-2">
+                                    <span class="loading loading-bars loading-sm"></span>
+                                </div>
                                 <h2 class="text-xl font-bold mb-2">{{ testCase.testTitle }}</h2>
                                 <p class="text-sm mb-2">{{ testCase.testDesc }}</p>
                                 <div class="flex justify-between items-center">
                                     <div>
                                         <h3 class="font-semibold">Input:</h3>
-                                        <pre class="text-sm rounded p-2">{{ testCase.stdin }}</pre>
+                                        <pre class="text-sm rounded p-2">{{ testCase.functionCallExample }}</pre>
                                     </div>
-                                    <div>
-                                        <h3 class="font-semibold">Output yang diharapkan:</h3>
-                                        <pre class="text-sm rounded p-2">{{ testCase.expectedOutput }}</pre>
+                                    <div class="flex flex-col gap-4">
+                                        <div>
+                                            <h3 class="font-semibold">Output yang diharapkan:</h3>
+                                            <pre class="text-sm rounded p-2">{{ testCase.expectedOutput }}</pre>
+                                        </div>
+                                        <div v-if="!testCase.stderr">
+                                            <h3 class="font-semibold">Output yang didapat:</h3>
+                                            <pre class="text-sm rounded p-2">{{ testCase.stdout }}</pre>
+                                        </div>
+                                        <div v-if="testCase.stderr">
+                                            <h3 class="font-semibold">Terjadi error:</h3>
+                                            <pre class="text-sm rounded p-2">{{ testCase.stderr }}</pre>
+                                        </div>
                                     </div>
                                 </div>
                                 <div v-if="testCase.status" class="mt-4">
@@ -72,7 +98,7 @@ async function handleSaveProgress() {
                         </div>
                     </div>
                     <div class="w-1/2">
-                        <codemirror :extensions="extensions" v-model="code" :style="{ height: '100%', width: '100%', 'font-size': '18px' }"></codemirror>
+                        <codemirror :extensions="getExtensions()" v-model="code" :style="{ height: '100%', width: '100%', 'font-size': '18px' }"></codemirror>
                     </div>
                 </div>
                 <div class="w-full p-4 flex">

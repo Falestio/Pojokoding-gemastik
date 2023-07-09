@@ -3,6 +3,7 @@ import { collection, getDocs, query, where } from "@firebase/firestore"
 export const readAllReplyInOneComment = async (commentId: string) => {
     const { $db } = useNuxtApp()
 
+    // @ts-ignore
     const replyRef = collection($db, "replies")
     const q = query(replyRef, where("commentId", "==", commentId))
 

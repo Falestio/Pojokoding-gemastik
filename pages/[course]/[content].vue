@@ -1,5 +1,5 @@
 <script setup>
-// TODO: make sure its crawable by google
+// TODO: SEO: make sure its crawable by google
 
 import { getContentData } from "@/utils/content/getContentData";
 import { getProgressOneCourse } from "@/utils/progress/getProgressOneCourse"

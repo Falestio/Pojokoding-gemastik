@@ -55,7 +55,8 @@ export const execCode = async (sourceCodeWithInput: any[]): Promise<any[]> => {
 
     const submissions = getResult.data.submissions.map((submission: any) => {
       const decodedStdout = base64.decode(submission.stdout).trim();
-      return { ...submission, stdout: decodedStdout };
+      const decodedStderr = submission.stderr ? base64.decode(submission.stderr).trim() : null;
+      return { ...submission, stdout: decodedStdout, stderr: decodedStderr};
     });
 
     console.log("Get Result Decoded: ",submissions)

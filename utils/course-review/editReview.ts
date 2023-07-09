@@ -1,6 +1,6 @@
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 
-// TODO: should bea able to change rating
+// TODO: !!!FUNC: should bea able to change rating
 export const editReview = async (reviewId: string, newReviewContent: string) => {
     const { $db } = useNuxtApp();
     console.log("REVIEW ID", reviewId);

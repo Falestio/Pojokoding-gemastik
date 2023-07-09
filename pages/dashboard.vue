@@ -10,9 +10,17 @@ import { deleteReview } from "@/utils/course-review/deleteReview";
 import { getRecommendedCourses } from "@/utils/content/getRecommendedCourses";
 import { getLatestUserProgress } from "@/utils/progress/getLatestUserProgress";
 
-const activeTab = ref("kursusku");
-const currentUser = useCurrentUser();
 const toast = useToast()
+const currentUser = useCurrentUser();
+const router = useRouter()
+const activeTab = ref("kursusku");
+
+onMounted(() => {
+    const { query } = router.currentRoute.value
+    if (query.tab === "kelola-akun") {
+        activeTab.value = "akunku";
+    }
+})
 
 // Get users progress
 const usersProgress = ref(null);

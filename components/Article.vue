@@ -3,10 +3,10 @@ import { renderMarkdown } from "@/utils/content/renderMarkdown";
 import { generateToc } from "@/utils/content/generateToc";
 const currentUser = useCurrentUser();
 
-// TODO: Integrasi code highlighter
-// TODO: line Numbers
-// TODO: line highlight
-// TODO: integrasi line highlight dengan sanity
+// TODO: FUNC: Integrasi code highlighter
+// TODO: FUNC: line Numbers
+// TODO: FUNC: line highlight
+// TODO: FUNC: bisa mengkontrol
 // tidak bisa menggunakan prism, jadi mungkin lakukan secara manual
 
 const props = defineProps(["contentData", "sidebarContent"]);
@@ -20,16 +20,16 @@ const quizData = props.contentData.quiz;
 </script>
 
 <template>
-    <div>
-        <!-- TODO: Diawal artikel tampilkan syarat apa saja yang harus diselesaikan untu kmenyelesaikan artikel -->
+    <div>``
+        <!-- TODO: UI: Diawal artikel tampilkan syarat apa saja yang harus diselesaikan untu kmenyelesaikan artikel -->
         <div class="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content flex flex-col p-8">
                 <!-- Page content here -->
-                <!-- TODO: Buat sebuah navbar khusus mobile yang menampilkan open drawer button, dan menu untuk membuka akun -->
+                <!-- TODO: UI: Buat sebuah navbar khusus mobile yang menampilkan open drawer button, dan menu untuk membuka akun -->
                 <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
 
-                <!-- TODO: bagian kanan dari artikel terlihat kosong, pikirkan sesuatu untuk mengisinya -->
+                <!-- TODO: UI: bagian kanan dari artikel terlihat kosong, pikirkan sesuatu untuk mengisinya -->
                 <div class="w-[670px]">
                     <h1 class="text-5xl mb-4">{{ contentData.title }}</h1>
                     <div class="w-full p-5 mb-4 bg-slate-900 rounded">

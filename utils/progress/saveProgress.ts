@@ -1,6 +1,6 @@
 import { collection, addDoc, Timestamp } from "firebase/firestore"
 
-// TODO: prevent add progress twice
+// TODO: !!!FUNC: prevent add progress twice
 export const saveProgress = async (userId: string, contentId: string, courseId: string, contentType: string, usersCode?: string) => {
   const { $db } = useNuxtApp()
 

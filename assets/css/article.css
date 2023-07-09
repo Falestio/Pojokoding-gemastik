@@ -67,6 +67,10 @@
     @apply bg-gray-600;
 }
 
+.article pre {
+    @apply text-lg p-1 rounded;
+}
+
 /* PrismJS 1.29.0
 https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+git+http+java+markup-templating+php+python+typescript&plugins=line-highlight+line-numbers */
 code[class*="language-"],

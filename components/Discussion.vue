@@ -102,8 +102,7 @@ async function handleUpvoteComment(commentId) {
 
 <template>
     <div>
-        <!-- TODO: Revisi UI, buat agar lebih mirip ui di stackoverflow -->
-        <!-- TODO: Integrasi fitur Reply (Balasan) -->
+        <!-- TODO: UI: Revisi UI, buat agar lebih mirip ui di stackoverflow -->
         <div class="w-[700px]">
             <!-- Submit komentar -->
             <div class="w-full mx-auto my-4 border rounded">
@@ -116,7 +115,8 @@ async function handleUpvoteComment(commentId) {
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-bold mb-2" for="discussion">Tambah Diskusi</label>
-                        <!-- TODO: Add live markdown editor support  -->
+                        <!-- TODO: FUNC: Add live markdown editor support  -->
+                        <!-- Lakukan hal sama dengan di prompt komponen exercise -->
                         <textarea v-model="newDiscussion" id="discussion" class="textarea textarea-bordered w-full" required></textarea>
                     </div>
                     <div class="flex items-center justify-between">
@@ -129,6 +129,15 @@ async function handleUpvoteComment(commentId) {
             <div>
                 <button @click="handleGetAllComment()" class="btn btn-primary my-4">Lihat komentar</button>
                 <div class="space-y-4">
+                    <!-- TODO: !!!FUNC: Integrasi fitur Reply (Balasan) -->
+                    <!-- 
+                    - terdapat tombol balas dan Balasan
+                        - tombol balas sejajar dengan tanggal
+                        - tombol balasan berada dibawah tanggal
+                    - ketika user mengklik balasan fetch semua balasan yang memiliki id komentar
+                    - balasan kurang lebih memiliki data yang sama dengan komentar
+                    
+                    - ketika user mengklik tombol balas akan muncul text area dimana user bisa menuliskan balasan -->
                     <div v-for="comment in allCommentInContent" :key="comment.id" class="p-4 bg-slate-700 rounded shadow border">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center">
@@ -157,11 +166,14 @@ async function handleUpvoteComment(commentId) {
                         </div>
                         <p v-if="!editMode || editModeCommentId != comment.id" class="text-sm">{{ comment.content }}</p>
                         <div v-if="!editMode || editModeCommentId != comment.id" class="flex items-center justify-between mt-2">
-                            <div class="flex items-center">
-                                <span class="text-xs text-gray-500">{{ new Date(comment.createdAt.seconds * 1000).toLocaleString() }}</span>
-                                <button class="btn btn-ghost btn-sm">Balas</button>
+                            <div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-gray-500">{{ new Date(comment.createdAt.seconds * 1000).toLocaleString() }}</span>
+                                    <button class="btn btn-ghost btn-sm">Balas</button>
+                                </div>
+                                <button @click="handleUpvoteComment(comment.id)" :class="{ 'text-blue-500': comment.upvotedUsers.includes(currentUser.uid) }" class="text-sm">Upvote ({{ comment.upvote }})</button>
                             </div>
-                            <button @click="handleUpvoteComment(comment.id)" :class="{ 'text-blue-500': comment.upvotedUsers.includes(currentUser.uid) }" class="text-sm">Upvote ({{ comment.upvote }})</button>
+                            <button class="btn- btn-ghost">Balasan(16)</button>
                         </div>
                         <div v-if="editMode && editModeCommentId === comment.id" class="mt-2">
                             <textarea v-model="editingCommentValue" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none" rows="4" placeholder="Update your comment"></textarea>
