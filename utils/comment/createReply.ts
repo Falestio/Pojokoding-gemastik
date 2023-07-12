@@ -11,9 +11,11 @@ export const createReply = async (newReplyContent: string, commentId: string, ui
         updatedAt: new Date(),
         username: username,
         photoUrl: photoUrl,
-        upvote: 0
+        upvote: 0,
+        upvotedUsers: []
     }
 
+    //@ts-ignore
     const replyRef = await addDoc(collection($db, "replies"), newReply)
 
     console.log("New Reply:", replyRef)

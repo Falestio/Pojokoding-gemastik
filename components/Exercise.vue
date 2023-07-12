@@ -65,8 +65,10 @@ async function handleSaveProgress() {
                             <div v-for="testCase in testCases" :key="testCase._key" class="rounded-lg shadow-md p-4 relative border border-slate-700">
                                 <div v-if="testCase.status == 'success'" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                                 <div v-if="testCase.status == 'failed'" class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
-                                <div v-if="testCase.status == 'loading'" class="absolute top-0 left-0 h-2 w-full align-end p-2">
-                                    <span class="loading loading-bars loading-sm"></span>
+                                <div v-if="testCase.status == 'loading'" class="absolute top-0 left-0 h-2 w-full p-2">
+                                    <div class="flex justify-end">
+                                        <span class="loading loading-bars loading-sm"></span>
+                                    </div>
                                 </div>
                                 <h2 class="text-xl font-bold mb-2">{{ testCase.testTitle }}</h2>
                                 <p class="text-sm mb-2">{{ testCase.testDesc }}</p>

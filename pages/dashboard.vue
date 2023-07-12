@@ -10,17 +10,21 @@ import { deleteReview } from "@/utils/course-review/deleteReview";
 import { getRecommendedCourses } from "@/utils/content/getRecommendedCourses";
 import { getLatestUserProgress } from "@/utils/progress/getLatestUserProgress";
 
-const toast = useToast()
+const toast = useToast();
 const currentUser = useCurrentUser();
-const router = useRouter()
+const router = useRouter();
 const activeTab = ref("kursusku");
 
+definePageMeta({
+    layout: "nofooter"
+})
+
 onMounted(() => {
-    const { query } = router.currentRoute.value
+    const { query } = router.currentRoute.value;
     if (query.tab === "kelola-akun") {
         activeTab.value = "akunku";
     }
-})
+});
 
 // Get users progress
 const usersProgress = ref(null);
@@ -82,13 +86,14 @@ function closeModal() {
 }
 
 // Create Review
-const rating = ref(0);
+const rating = ref(5);
 const review = ref("");
-const closeReviewDialog = ref(null)
+const closeReviewDialog = ref(null);
 
 async function handleCreateReview(courseId) {
+    console.log("Rating", rating.value);
+    console.log("Review", review.value);
     await createReview(currentUser.value, review.value, rating.value, courseId);
-    closeReviewDialog.value.$el.click()
     toast.success("Berhasil menambah review", {
         timeout: 2000,
     });
@@ -110,29 +115,29 @@ function openEditReview() {
 }
 
 async function handleEditReview(reviewId) {
-    await editReview(reviewId, newReviewContent.value);
+    await editReview(reviewId, newReviewContent.value, reviewPreview.value.rating);
 }
 
 // Delete Review
 async function handleDeleteReview(reviewId) {
     await deleteReview(reviewId);
-    closeReviewDialog.value.$el.click()
+    closeReviewDialog.value.$el.click();
     toast.success("Berhasil menghapus review", {
         timeout: 2000,
-    })
+    });
 }
 
 // Navigate user to the latest progress
 async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
-    const kontenTerakhir = await getLatestUserProgress(currentUser.value.uid, courseId)
-    console.log(courseSlug)
-    navigateTo(`/${courseSlug}/${kontenTerakhir.slug.current}`)
-}   
+    const kontenTerakhir = await getLatestUserProgress(currentUser.value.uid, courseId);
+    console.log(courseSlug);
+    navigateTo(`/${courseSlug}/${kontenTerakhir.slug.current}`);
+}
 </script>
 
 <template>
     <div>
-        <div class="bg-[#191825] px-[80px] py-[20px] flex flex-col gap-6 h-full">
+        <div class="bg-[#191825] py-8 flex flex-col gap-6 h-full con">
             <div class="tabs">
                 <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursusku</button>
                 <div class="divider divider-horizontal"></div>
@@ -189,9 +194,6 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                                         </div>
                                         <!-- TODO: UI: Posisikan card agak diatas -->
                                         <div v-if="reviewPreview" class="w-full">
-                                            <!-- <pre>
-                                                {{ reviewPreview }}
-                                            </pre> -->
                                             <h2 class="text-xl font-bold mb-4">Ulasan Anda</h2>
                                             <div class="flex justify-between items-start w-full">
                                                 <div class="flex gap-3 items-center">
@@ -249,21 +251,17 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                     </div>
                 </div>
                 <h2 class="text-2xl font-medium">Rekomendasi Kursus</h2>
-                <div class="flex gap-8">
+                <div class="grid grid-cols-3 gap-4">
                     <template v-for="course in recommendedCourses" :key="course._id">
-                        <div class="card bg-slate-800 shadow-xl">
-                            <figure>
-                                <img class="w-full h-48 object-cover" :src="course.mainImage" alt="Shoes" />
-                            </figure>
-                            <div class="card-body">
-                                <h2 class="card-title">{{ course.title }}</h2>
-                                <p>{{ course.shortDescription }}</p>
-                                <div class="badge badge-outline">{{ course.difficulty }}</div>
-                                <div class="card-actions justify-end">
-                                    <NuxtLink :to="`/${course.slug.current}`" class="btn btn-primary">Belajar sekarang</NuxtLink>
+                        <NuxtLink :to="`/${course.slug.current}`">
+                            <div class="card card-compact bg-slate-900 hover:bg-slate-800 shadow-xl">
+                                <figure><img :src="course.mainImage" alt="Shoes" class="w-full h-56 bg-cover" /></figure>
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ course.title }}</h2>
+                                    <p class="text-lg">{{ course.shortDescription }}</p>
                                 </div>
                             </div>
-                        </div>
+                        </NuxtLink>
                     </template>
                 </div>
             </div>
@@ -296,14 +294,14 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                                 <input v-model="newName" type="text" class="w-full bg-inherit" />
                                 <button @click="handleChangeName()" class="min-w-fit border-l border-l-second py-2 px-2">Ubah nama</button>
                             </div>
-                            <p class="text-xs">Your name may appear around GitHub where you contribute or are mentioned. You can remove it at any time.</p>
+                            <p class="text-xs">Ini adalah nama yang akan dilihat user lain</p>
                         </div>
                         <div class="flex flex-col gap-1">
                             <p>Email:</p>
                             <div class="flex border border-second rounded-lg pl-4">
                                 <p class="py-2">{{ currentUser.email }}</p>
                             </div>
-                            <p class="text-xs">Kamu tidak dapat mengubah surel yang anda gunakan</p>
+                            <p class="text-xs">Kamu tidak dapat mengubah surel yang digunakan</p>
                         </div>
                         <div class="flex flex-col gap-1">
                             <p>Kata sandi:</p>

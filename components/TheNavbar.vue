@@ -3,7 +3,7 @@
         <NuxtLink to="/" class="text-2xl sm:text-3xl font-bold text-primary drop-shadow-md">Pojokoding</NuxtLink>
         <div class="hidden sm:flex items-center gap-6">
             <div class="flex">
-                <NuxtLink to="/kontak" class="px-4 btn btn-ghost">Hubungi Kami</NuxtLink>
+                <!-- <NuxtLink to="/kontak" class="px-4 btn btn-ghost">Hubungi Kami</NuxtLink> -->
                 <NuxtLink to="/katalog-kursus" class="px-4 btn btn-ghost">Katalog Kursus</NuxtLink>
                 <NuxtLink to="/dashboard" class="px-4 btn btn-ghost">Dashboard</NuxtLink>
             </div>

@@ -10,12 +10,11 @@ async function handleUserLogin(){
     navigateTo('/dashboard')
 }
 // TODO: FUNC : lupa password
-
 </script>
 
 <template>
     <div class="flex justify-center items-center h-screen bg-background">
-        <div class="w-3/12 flex flex-col gap-4">
+        <div class="max-w-sm flex flex-col gap-4">
             <div class="border border-second rounded">
                 <h2 class="bg-slate-800 text-center text-2xl py-2">Masuk ke akun Anda</h2>
                 <div class="flex flex-col px-8 py-6 gap-3">

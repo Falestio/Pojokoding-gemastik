@@ -1,6 +1,8 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "author": "Falestio Hanif Al Hakim",
+  "version": "1.0.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

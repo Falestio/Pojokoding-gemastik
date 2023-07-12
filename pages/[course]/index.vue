@@ -12,14 +12,13 @@ const allReviewInCourse = ref(null);
 async function handleGetAllReview() {
     allReviewInCourse.value = await readAllReview(courseData.value._id);
 }
-
 </script>
 
 <template>
     <div class="mt-8">
-        <div class="bg-[#191825] px-[80px] text-white flex">
+        <div class="bg-[#191825] con text-white grid grid-cols-3 gap-4">
             <!-- TODO: UI: fix layouting, follow best practices -->
-            <main class="flex w-7/12 flex-col gap-6">
+            <main class="flex flex-col gap-6 col-span-2">
                 <div class="flex flex-col">
                     <h2 class="text-5xl font-medium">{{ courseData.title }}</h2>
                     <p>{{ courseData.shortDescription }}</p>
@@ -31,8 +30,7 @@ async function handleGetAllReview() {
                 <div class="flex flex-col gap-2">
                     <!-- TODO: FUNC: display subcourses -->
                     <h2 class="text-2xl">Materi Kursus</h2>
-                    <!-- TODO: !!!FUNC: Calculate this dynamically -->
-                    <p>27 sections • 165 lectures • 24h 54m total length</p>
+                    <p>{{ courseData.postCount }} Artikel - {{ courseData.exerciseCount }} Latihan</p>
 
                     <ul class="space-y-4">
                         <template v-for="(content, index) in courseData.content" :key="index">
@@ -51,8 +49,7 @@ async function handleGetAllReview() {
                     </div>
                 </div>
                 <!-- TODO: UI: Standardized review ui menggunakan diasy -->
-                <!-- TODO: !!!BUG: fix rating bug in readAllReview -->
-                <!-- TODO: !!!FUNC: fetch 3 reviews on page load -->
+                <!-- TODO: FUNC: fetch 3 reviews on page load -->
                 <div class="flex flex-col gap-2">
                     <h2 class="text-2xl">Review</h2>
                     <button v-if="!allReviewInCourse" @click="handleGetAllReview()" class="btn">Tampilkan Review</button>
@@ -62,8 +59,15 @@ async function handleGetAllReview() {
                                 <img :src="review.photoUrl" alt="User avatar" class="w-8 h-8 rounded-full" />
                                 <div>
                                     <p class="text-sm font-bold">{{ review.username }}</p>
-                                    <div class="flex space-x-1">
-                                        <span v-for="star in review.rating" :key="star" class="text-yellow-500"> ★ </span>
+                                    <div class="relative">
+                                        <div class="absolute w-full h-full top-0 left-0 z-10" />
+                                        <div class="rating">
+                                            <input type="radio" value="1" v-model="review.rating" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" value="2" v-model="review.rating" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" value="3" v-model="review.rating" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" value="4" v-model="review.rating" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                                            <input type="radio" value="5" v-model="review.rating" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -75,21 +79,14 @@ async function handleGetAllReview() {
             </main>
             <!-- TODO: UI: Tampilkan judul dan informasi kecil lainnya di card ini -->
             <!-- TODO: UI: make it sticky -->
-            <div class="w-4/12 h-auto">
-                <img :src="courseData.image" alt="gambar" class="bg-slate-400 h-64 w-full" />
-                <div class="px-4 text-xl py-2">
-                    <p>Rp {{ courseData.price }}</p>
+            <div class="h-auto">
+                <img :src="courseData.image" alt="gambar" class="bg-slate-400 h-64 w-ful object-cover rounded" />
+                <div class="text-xl">
                     <div class="flex h-10 gap-3 mt-3">
-                        <NuxtLink :to="`/${courseData.slug.current}/${courseData.content[0].slug.current}`" class="btn btn-primary w-full">Mulai Belajar</NuxtLink>
-                        <!-- <button type="button" class="w-3/12 border border-second">Beli</button> -->
+                        <NuxtLink :to="`/${courseData.slug.current}/${courseData.content[0].slug.current}`" class="btn btn-primary w-full text-white">Mulai Belajar</NuxtLink>
                     </div>
                 </div>
             </div>
-
         </div>
-        <footer class="flex justify-between items-center px-[80px] pt-8 pb-8 text-white">
-            <h1 class="text-3xl font-bold text-primary drop-shadow-md">PojoKoding</h1>
-            <p>PojoKoding Copyright 2023</p>
-        </footer>
     </div>
 </template>

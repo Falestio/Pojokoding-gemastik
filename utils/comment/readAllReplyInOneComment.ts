@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from "@firebase/firestore"
+import { collection, getDocs, query, where, orderBy } from "@firebase/firestore"
 
 export const readAllReplyInOneComment = async (commentId: string) => {
     const { $db } = useNuxtApp()
@@ -17,7 +17,11 @@ export const readAllReplyInOneComment = async (commentId: string) => {
             ...doc.data()
         })
     })
-    
+
+    // sort array of object by createdAt ASC
+    const sortedReplies = replies.sort((a, b) => {
+        return a.createdAt - b.createdAt
+    })
 
     return replies
 }
