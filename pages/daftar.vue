@@ -1,6 +1,10 @@
 <script setup>
 import { userRegister } from '@/utils/user/userRegsiter';
 
+useHead({
+    title: "Daftar"
+})
+
 // TODO: FUNC : form validation
 // TODO: FUNC : captcha security
 // TODO: FUNC : pemberitahuan email sudah digunakan

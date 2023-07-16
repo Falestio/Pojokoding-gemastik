@@ -19,6 +19,10 @@ definePageMeta({
     layout: "nofooter"
 })
 
+useHead({
+    title: "Dashboard"
+})
+
 onMounted(() => {
     const { query } = router.currentRoute.value;
     if (query.tab === "kelola-akun") {

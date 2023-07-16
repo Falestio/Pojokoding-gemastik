@@ -1,6 +1,10 @@
 <script setup>
 import { getAllCoursesForHomepage } from "@/utils/content/getAllCoursesForHomepage";
 
+useHead({
+    title: "Pojokoding"
+})
+
 const allCourses = await getAllCoursesForHomepage();
 </script>
 

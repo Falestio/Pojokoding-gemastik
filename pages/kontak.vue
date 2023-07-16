@@ -1,3 +1,9 @@
+<script setup>
+useHead({
+    title: "Kontak"
+})
+</script>
+
 <template>
     <!-- TODO: FUNC: implementasi halamn kontaks -->
     <div>

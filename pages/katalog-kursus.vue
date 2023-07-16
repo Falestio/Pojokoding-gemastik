@@ -7,7 +7,7 @@ const coursesData = await getAllCoursesForCatalog();
 <template>
     <div class="con mt-8">
         <h1 class="text-4xl font-bold mb-8">Katalog Kursus</h1>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-3 gap-4 min-h-screen">
             <template v-for="course in coursesData" :key="course._id">
                 <NuxtLink :to="`/${course.slug.current}`">
                     <div class="card card-compact bg-slate-900 hover:bg-slate-800 shadow-xl">

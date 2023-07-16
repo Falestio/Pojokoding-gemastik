@@ -2,6 +2,10 @@
 // TODO: FUNC : Sama seperti daftar
 import { userLogin } from '@/utils/user/userLogin' 
 
+useHead({
+    title: "Masuk"
+})
+
 const email = ref('')
 const password = ref('')
 

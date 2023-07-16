@@ -4,7 +4,7 @@
         <!-- Sebelum Quiz Dimulai -->
         <div v-if="!quizStarted">
             <h2 class="text-3xl">Quiz</h2>
-            <p>Selesaikan quiz untuk menyimkan kemajuan</p>
+            <p>Selesaikan quiz untuk menyimpan kemajuan</p>
             <p>Jumlah pertanyaan: {{ quizData.length }}</p>
             <button @click="startQuiz" class="btn btn-primary mt-4">Mulai Quiz</button>
         </div>

@@ -239,7 +239,7 @@ function cancelReplyEditing(){
                                 <button @click="handleUpvoteComment(comment.id)" :class="{ 'text-blue-500': comment.upvotedUsers.includes(currentUser.uid) }" class="text-sm">Upvote ({{ comment.upvote }})</button>
                             </div>
                             <div>
-                                <button @click="handleGetAllReplyInOneComment(comment.id)" class="btn- btn-ghost">Balasan(16)</button>
+                                <button @click="handleGetAllReplyInOneComment(comment.id)" class="btn- btn-ghost">Balasan</button>
                             </div>
                         </div>
                         <div v-if="editMode && editModeCommentId === comment.id" class="mt-2">
