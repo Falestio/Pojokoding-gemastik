@@ -17,7 +17,6 @@ async function handleGetAllReview() {
 <template>
     <div class="mt-8">
         <div class="bg-[#191825] con text-white grid grid-cols-3 gap-4">
-            <!-- TODO: UI: fix layouting, follow best practices -->
             <main class="flex flex-col gap-6 col-span-2">
                 <div class="flex flex-col">
                     <h2 class="text-5xl font-medium">{{ courseData.title }}</h2>
@@ -48,7 +47,6 @@ async function handleGetAllReview() {
                         {{ courseData.description }}
                     </div>
                 </div>
-                <!-- TODO: UI: Standardized review ui menggunakan diasy -->
                 <!-- TODO: FUNC: fetch 3 reviews on page load -->
                 <div class="flex flex-col gap-2">
                     <h2 class="text-2xl">Review</h2>
@@ -77,7 +75,6 @@ async function handleGetAllReview() {
                     </div>
                 </div>
             </main>
-            <!-- TODO: UI: Tampilkan judul dan informasi kecil lainnya di card ini -->
             <!-- TODO: UI: make it sticky -->
             <div class="h-auto">
                 <img :src="courseData.image" alt="gambar" class="bg-slate-400 h-64 w-ful object-cover rounded" />
