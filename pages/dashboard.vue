@@ -1,5 +1,7 @@
 <script setup>
 import { useToast } from "vue-toastification";
+import Cropper from "cropperjs";
+import "cropperjs/dist/cropper.css";
 import { changeName } from "@/utils/user/changeName";
 import { getProgressDashboard } from "~/utils/progress/getProgressDashboard";
 import { uploadProfilePicture } from "@/utils/user/uploadProfilePicture";
@@ -9,6 +11,8 @@ import { editReview } from "@/utils/course-review/editReview";
 import { deleteReview } from "@/utils/course-review/deleteReview";
 import { getRecommendedCourses } from "@/utils/content/getRecommendedCourses";
 import { getLatestUserProgress } from "@/utils/progress/getLatestUserProgress";
+import { verifyImageSize } from "@/utils/image/verifyImageSize";
+// import { verifyImageFormat } from "@/utils/image/verifyImageFormat";
 
 const toast = useToast();
 const currentUser = useCurrentUser();
@@ -16,12 +20,12 @@ const router = useRouter();
 const activeTab = ref("kursusku");
 
 definePageMeta({
-    layout: "nofooter"
-})
+    layout: "nofooter",
+});
 
 useHead({
-    title: "Dashboard"
-})
+    title: "Dashboard",
+});
 
 onMounted(() => {
     const { query } = router.currentRoute.value;
@@ -60,24 +64,84 @@ watch(currentUser, async (newValue, oldValue) => {
 // Get Recommended Courses
 const recommendedCourses = await getRecommendedCourses();
 
+// ====================== PROFILE PICTURE CHANGE ======================
 const newProfilePictureImage = ref(null);
 const newProfilePictureImageUrl = ref(null);
+const newImageElement = ref(null)
+const cropper = ref(null);
 
 async function handleUploadProfilePicture() {
     await uploadProfilePicture(newProfilePictureImage.value, currentUser.value);
     closeModal();
 }
 
+// function to initialize crop features
+// user upload pictures -> validation -> open modal -> init cropper -> user crop image -> get cropped image -> upload cropped image
+function initCropper() {
+    if(newProfilePictureImage.value){
+        console.log("Initailizing Cropper")
+        console.log("newImageElement", newImageElement.value)
+        cropper.value = new Cropper(newImageElement.value, {
+            crop(event) {
+                console.log(event.detail.x);
+                console.log(event.detail.y);
+                console.log(event.detail.width);
+                console.log(event.detail.height);
+                console.log(event.detail.rotate);
+                console.log(event.detail.scaleX);
+                console.log(event.detail.scaleY);
+            },
+        });
+    }
+}
+
+// invoked when user user has uploaded their picture
 function handleFileChange(event) {
+    // ====== GET THE IMAGE ======
     newProfilePictureImage.value = event.target.files[0];
+    if(process.client){
+        newImageElement.value = document.getElementById("new-image");
+    }
+
+    // ====== VALUDATION ======
+    const acceptedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+
+    console.log(newProfilePictureImage.value.size);
+    console.log(newProfilePictureImage.value.type);
+
+    const isImageSizeVerified = newProfilePictureImage.value.size < 10 * 1024 * 1024;
+    const isImageTypeVerified = acceptedImageTypes.includes(newProfilePictureImage.value.type);
+
+    if (!isImageSizeVerified) {
+        toast.error("Ukuran gambar tidak boleh lebih dari 10MB", {
+            timeout: 2000,
+        });
+        return;
+    }
+
+    if (!isImageTypeVerified) {
+        toast.error("Format gambar tidak didukung", {
+            timeout: 2000,
+        });
+        return;
+    }
+
+    // ====== OPEN MODAL ======
     openProfilePictureModal.value = true;
 
-    if (newProfilePictureImage.value) {
+    // ====== INIT CROPPER ======
+    initCropper();
+
+    console.log(isImageSizeVerified)
+    console.log(isImageTypeVerified)
+
+    if (newProfilePictureImage.value && isImageSizeVerified && isImageTypeVerified) {
         const reader = new FileReader();
         reader.onload = (e) => {
             newProfilePictureImageUrl.value = e.target.result;
         };
         reader.readAsDataURL(newProfilePictureImage.value);
+        console.log("Image is valid", newProfilePictureImageUrl.value);
     }
 }
 
@@ -234,7 +298,9 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                                                 </div>
                                             </div>
                                             <div class="mt-2">
-                                                <p v-if="!editReviewMode">{{ reviewPreview.content }}</p>
+                                                <p v-if="!editReviewMode">
+                                                    {{ reviewPreview.content }}
+                                                </p>
                                                 <div v-else>
                                                     <textarea class="textarea textarea-bordered w-full" v-model="newReviewContent"></textarea>
                                                     <div class="flex gap-2 mt-3">
@@ -259,7 +325,9 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                     <template v-for="course in recommendedCourses" :key="course._id">
                         <NuxtLink :to="`/${course.slug.current}`">
                             <div class="card card-compact bg-slate-900 hover:bg-slate-800 shadow-xl">
-                                <figure><img :src="course.mainImage" alt="Shoes" class="w-full h-56 bg-cover" /></figure>
+                                <figure>
+                                    <img :src="course.mainImage" alt="Shoes" class="w-full h-56 bg-cover" />
+                                </figure>
                                 <div class="card-body">
                                     <h2 class="card-title">{{ course.title }}</h2>
                                     <p class="text-lg">{{ course.shortDescription }}</p>
@@ -335,7 +403,7 @@ async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
                                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                     <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">Preview of Uploaded Picture</h3>
                                     <div class="mt-2">
-                                        <img :src="newProfilePictureImageUrl" v-if="newProfilePictureImageUrl" />
+                                        <img id="new-image" :src="newProfilePictureImageUrl" v-if="newProfilePictureImageUrl" />
                                     </div>
                                 </div>
                             </div>
