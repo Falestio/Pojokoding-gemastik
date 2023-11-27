@@ -1,14 +1,17 @@
 <script setup>
 import { saveProgress } from "@/utils/progress/saveProgress";
 import { renderMarkdown } from "@/utils/content/renderMarkdown";
+import { useContentStore } from "@/stores/content";
 
 const currentUser = useCurrentUser();
-const props = defineProps(["quizData", "contentId", "courseId", "contentType"]);
+const contentStore = useContentStore();
+const progressStore = useProgressStore();
+const props = defineProps(["isContentCompleted"]);
 
 // foreach question in quizData lakukan renderMarkdown(question.question),
 // lalu untuk setiap choices rendermarkdown(choices.text) dan renderMarkdown(choices.explanation)
 // buatlah property rendered untuk menandai jika sudah di render
-const clonedQuizData = JSON.parse(JSON.stringify(props.quizData));
+const clonedQuizData = JSON.parse(JSON.stringify(contentStore.contentData.quiz));
 
 const renderedQuizData = clonedQuizData.map((question) => {
     question.question = renderMarkdown(question.question);
@@ -49,8 +52,7 @@ function checkAnswer() {
     if (renderedQuizData[questionIndex.value].choices[selectedAnswer.value].isCorrect) {
         correctChoiceSelected.value = true;
         wrongChoiceSelected.value = false;
-        explanation.value =
-            renderedQuizData[questionIndex.value].choices[selectedAnswer.value].explanation;
+        explanation.value = renderedQuizData[questionIndex.value].choices[selectedAnswer.value].explanation;
 
         // If this is the last question and the answer is correct, the quiz has ended
         if (questionIndex.value === renderedQuizData.length - 1) {
@@ -59,8 +61,7 @@ function checkAnswer() {
     } else {
         wrongChoiceSelected.value = true;
         correctChoiceSelected.value = false;
-        explanation.value =
-            renderedQuizData[questionIndex.value].choices[selectedAnswer.value].explanation;
+        explanation.value = renderedQuizData[questionIndex.value].choices[selectedAnswer.value].explanation;
     }
 }
 
@@ -75,91 +76,84 @@ async function nextQuestion() {
 }
 
 async function handleAddProgress() {
-    await saveProgress(currentUser.value.uid, props.contentId, props.courseId, props.contentType);
+    // Save progress when user finishes the quiz
+    await saveProgress(currentUser.value.uid, contentStore.contentData._id, contentStore.contentData.course._ref, contentStore.contentData.contentType);
+    // Fetch the latest user progress
+    await progressStore.fetchUserProgress(currentUser.value.uid, contentStore.contentData.course._ref);
+    // Update the sidebar content with latest user progress
+    contentStore.updateSidebarContent(progressStore.userProgress);
 }
 </script>
 
 <template>
     <div class="my-5 p-4 rounded-lg shadow-md border border-slate-600">
-        <!-- Sebelum Quiz Dimulai -->
-        <div v-if="!quizStarted">
-            <h2 class="text-3xl">Quiz</h2>
-            <p>Selesaikan quiz untuk menyimpan kemajuan</p>
-            <p>Jumlah pertanyaan: {{ renderedQuizData.length }}</p>
-            <button @click="startQuiz" class="btn btn-primary mt-4">Mulai Quiz</button>
-        </div>
-        <!-- Quiz Dilaksanakan -->
-        <div v-else-if="questionIndex < renderedQuizData.length && !quizDone">
-            <span>Pertanyaan {{ questionIndex + 1 }}/{{ renderedQuizData.length }}</span>
-            <div class="article" v-html="renderedQuizData[questionIndex].question"></div>
-            <div
-                v-if="correctChoiceSelected || wrongChoiceSelected"
-                class="bg-slate-800 p-4 rounded"
-            >
-                <p v-if="wrongChoiceSelected" class="text-red-500">Salah</p>
-                <p v-if="correctChoiceSelected" class="text-green-500">Benar</p>
-                <div class="article" v-html="explanation"></div>
+        <div v-if="props.isContentCompleted">
+            <!-- $ Jika sudah menyelesaikan quiz -->
+            <div>
+                <span class="text-3xl text-success mb-8">Quiz Selesai!</span>
+                <div class="flex flex-col gap-4">
+                    <template v-for="(question, index) in renderedQuizData" :key="question._key">
+                        <div>
+                            <span class="text-lg">Pertanyaan {{ index + 1 }}</span>
+                            <span class="article" v-html="question.question"></span>
+                        </div>
+                        <div class="inline text-lg">
+                            <span>Jawaban:</span>
+                            <span class="article" v-html="getCorrectAnswer(question).text"></span>
+                        </div>
+                        <span class="article bg-slate-800 p-2 rounded" v-html="getCorrectAnswer(question).explanation"></span>
+                    </template>
+                </div>
             </div>
+        </div>
+        <div v-else>
+            <!-- $ Sebelum Quiz Dimulai -->
+            <div v-if="!quizStarted">
+                <h2 class="text-3xl">Quiz</h2>
+                <p>Selesaikan quiz untuk menyimpan kemajuan</p>
+                <p>Jumlah pertanyaan: {{ renderedQuizData.length }}</p>
+                <button @click="startQuiz" class="btn btn-primary mt-4">Mulai Quiz</button>
+            </div>
+            <!-- $ Quiz Sedang Dilaksanakan -->
+            <div v-else-if="questionIndex < renderedQuizData.length && !quizDone">
+                <span>Pertanyaan {{ questionIndex + 1 }}/{{ renderedQuizData.length }}</span>
+                <div class="article" v-html="renderedQuizData[questionIndex].question"></div>
+                <div v-if="correctChoiceSelected || wrongChoiceSelected" class="bg-slate-800 p-4 rounded">
+                    <p v-if="wrongChoiceSelected" class="text-red-500">Salah</p>
+                    <p v-if="correctChoiceSelected" class="text-green-500">Benar</p>
+                    <div class="article" v-html="explanation"></div>
+                </div>
 
-            <div
-                v-for="(choice, index) in renderedQuizData[questionIndex].choices"
-                :key="choice._key"
-                class="mt-4"
-            >
-                <label class="w-full h-full">
-                    <div
-                        class="p-4 rounded border border-gray-700 mb-2 cursor-pointer flex items-center gap-4"
-                        :class="{ 'bg-gray-700': wrongChoiceSelected && selectedAnswer === index }"
-                    >
-                        <input
-                            class="radio"
-                            type="radio"
-                            v-model="selectedAnswer"
-                            :value="index"
-                            :disabled="wrongChoiceSelected && selectedAnswer === index"
-                        />
-                        <div class="article" v-html="choice.text"></div>
-                    </div>
-                </label>
+                <div v-for="(choice, index) in renderedQuizData[questionIndex].choices" :key="choice._key" class="mt-4">
+                    <label class="w-full h-full">
+                        <div class="p-4 rounded border border-gray-700 mb-2 cursor-pointer flex items-center gap-4" :class="{ 'bg-gray-700': wrongChoiceSelected && selectedAnswer === index }">
+                            <input class="radio" type="radio" v-model="selectedAnswer" :value="index" :disabled="wrongChoiceSelected && selectedAnswer === index" />
+                            <div class="article" v-html="choice.text"></div>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex gap-4 justify-end mt-4">
+                    <button v-if="selectedAnswer !== null && !correctChoiceSelected" @click="checkAnswer" class="btn btn-primary mr-4">Cek jawaban</button>
+                    <button v-if="correctChoiceSelected && questionIndex < renderedQuizData.length - 1" @click="nextQuestion" class="btn btn-primary">Pertanyaan selanjutnya</button>
+                    <button v-if="correctChoiceSelected && questionIndex === renderedQuizData.length - 1" @click="finishQuiz" class="btn btn-primary">Selesai</button>
+                </div>
             </div>
-            <div class="flex gap-4 justify-end mt-4">
-                <button
-                    v-if="selectedAnswer !== null && !correctChoiceSelected"
-                    @click="checkAnswer"
-                    class="btn btn-primary mr-4"
-                >
-                    Cek jawaban
-                </button>
-                <button
-                    v-if="correctChoiceSelected && questionIndex < renderedQuizData.length - 1"
-                    @click="nextQuestion"
-                    class="btn btn-primary"
-                >
-                    Pertanyaan selanjutnya
-                </button>
-                <button
-                    v-if="correctChoiceSelected && questionIndex === renderedQuizData.length - 1"
-                    @click="finishQuiz"
-                    class="btn btn-primary"
-                >
-                    Selesai
-                </button>
-            </div>
-        </div>
-        <!-- Quiz Selesai -->
-        <div v-else-if="quizDone" class="my-4">
-            <span class="text-3xl text-success mb-8">Quiz Selesai!</span>
-            <div class="flex flex-col gap-4">
-                <template v-for="(question, index) in renderedQuizData" :key="question._key">
-                    <div>
-                        <span class="text-lg">Pertanyaan {{ index + 1 }}/{{ renderedQuizData.length }}</span>
-                        <span class="article" v-html="question.question"></span>
-                    </div>
-                    <span class="text-lg">Jawaban: {{ getCorrectAnswer(question).text }}</span>
-                    <span class="text-md bg-slate-800 p-2 rounded">
-                        {{ getCorrectAnswer(question).explanation }}
-                    </span>
-                </template>
+            <!-- $ Quiz Selesai -->
+            <div v-else-if="quizDone" class="my-4">
+                <span class="text-3xl text-success mb-8">Quiz Selesai!</span>
+                <div class="flex flex-col gap-4">
+                    <template v-for="(question, index) in renderedQuizData" :key="question._key">
+                        <div>
+                            <span class="text-lg">Pertanyaan {{ index + 1 }}</span>
+                            <span class="article" v-html="question.question"></span>
+                        </div>
+                        <div class="inline text-lg">
+                            <span>Jawaban:</span>
+                            <span class="article" v-html="getCorrectAnswer(question).text"></span>
+                        </div>
+                        <span class="article bg-slate-800 p-2 rounded" v-html="getCorrectAnswer(question).explanation"></span>
+                    </template>
+                </div>
             </div>
         </div>
     </div>

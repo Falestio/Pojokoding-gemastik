@@ -1,5 +1,6 @@
-// in homepage fetch 6 courses only, then see all courses
-export const getAllCoursesForHomepage = async () => {
+export default defineEventHandler(async (event) => {
+    const sanity = useSanity();
+
     const query = groq`*[_type == "course"][0..5]{
         _id,
         _rev,
@@ -13,6 +14,6 @@ export const getAllCoursesForHomepage = async () => {
         price,
         orderRank
     }`;
-    const { data: courses } = await useSanityQuery(query);
+    const courses= await sanity.fetch(query);
     return courses
-};
+})

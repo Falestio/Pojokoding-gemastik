@@ -1,51 +1,55 @@
 <script setup>
-// TODO: SEO: make sure its crawable by google
+import { useContentStore } from "@/stores/content";
+import { useProgressStore } from "@/stores/progress";
+import { storeToRefs } from "pinia";
 
-import { getContentData } from "@/utils/content/getContentData";
-import { getProgressOneCourse } from "@/utils/progress/getProgressOneCourse"
+definePageMeta({ layout: "empty" });
 
-const currentUser = useCurrentUser()
-
-definePageMeta({
-    layout: "empty",
-});
-
+const currentUser = useCurrentUser();
 const route = useRoute();
 const contentSlug = route.params.content;
 const courseSlug = route.params.course;
 
-const contentData = await getContentData(contentSlug, courseSlug);
+const contentStore = useContentStore();
+const progressStore = useProgressStore();
 
-const sidebarContent = ref(contentData.sidebar)
+// Fetch content data
+await contentStore.fetchContentData(contentSlug, courseSlug);
 
-// Get users progress for sidebar
-async function handleGetUsersProgress(){
-    const completedContents = await getProgressOneCourse(currentUser.value.uid, contentData.course._ref)
-
-    sidebarContent.value.forEach((item) => {
-        const match = completedContents.some((completedItem) => completedItem.contentId === item._id);
-        if (match) {
-            item.completed = true;
-        }
-    });
-    
-    console.log("sidebar content", sidebarContent.value)
+// Function to fetch and update user's progress
+async function handleGetUsersProgress() {
+    if (currentUser.value && contentStore.contentData) {
+        await progressStore.fetchUserProgress(currentUser.value.uid, contentStore.contentData.course._ref);
+        contentStore.updateSidebarContent(progressStore.userProgress);
+    }
 }
 
-if(currentUser.value){
-    await handleGetUsersProgress()
+if (currentUser.value) {
+    await handleGetUsersProgress();
 }
 
-watch(currentUser,  async (newValue, oldvalue) => {
-    await handleGetUsersProgress()
-})
+watch(currentUser, async (newValue, oldValue) => {
+    if (newValue) {
+        await handleGetUsersProgress();
+    }
+});
 </script>
 
 <template>
     <div>
+        <!-- TODO: Tampilkan subcourses pada sidebar -->
+        <!-- TODO: Jumlah artikel dan latihan dijadikan dynamic -->
         <TheNavbar></TheNavbar>
-        <Article :content-data="contentData" :sidebar-content="sidebarContent" v-if="contentData.contentType == 'post'"></Article>
-        <Exercise :content-data="contentData" :sidebar-content="sidebarContent" v-if="contentData.contentType == 'exercise'"></Exercise>
+        <Article v-if="contentStore.contentData.contentType == 'post'"></Article>
+        <Exercise v-if="contentStore.contentData.contentType == 'exercise'"></Exercise>
+        <!-- <p>Updated Sidebar</p>
+        <pre>
+            {{ contentStore.sidebarContent }}
+        </pre>
+        <p>Content Data</p>
+        <pre>
+            {{ contentStore.contentData }}
+        </pre> -->
     </div>
 </template>
 

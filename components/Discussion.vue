@@ -176,10 +176,12 @@ function cancelReplyEditing(){
 
 <template>
     <div>
-        <!-- TODO: UI: Revisi UI, buat agar lebih mirip ui di stackoverflow -->
-        <div class="w-[700px]">
-            <!-- Submit komentar -->
-            <div class="w-full mx-auto my-4 border rounded">
+        <!-- TODO: Standardisasi UI -->
+        <div class="">
+            <!-- $ Submit komentar -->
+            <div class="divider"></div> 
+            <h2 class="text-3xl font-bold">Diskusi</h2>
+            <div class="w-full mx-auto my-4 border border-slate-500 rounded">
                 <form @submit.prevent="submitDiscussion" class="shadow-md rounded p-4 mb-4">
                     <div class="mb-4 flex items-center gap-3">
                         <img :src="currentUser.photoURL" class="h-10 w-10 rounded-full" />
@@ -188,10 +190,8 @@ function cancelReplyEditing(){
                         </label>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-bold mb-2" for="discussion">Tambah Diskusi</label>
-                        <!-- TODO: FUNC: Add live markdown editor support  -->
                         <!-- Lakukan hal sama dengan di prompt komponen exercise -->
-                        <textarea v-model="newDiscussion" id="discussion" class="textarea textarea-bordered w-full" required></textarea>
+                        <tiptap v-model="newDiscussion"></tiptap>
                     </div>
                     <div class="flex items-center justify-between">
                         <button @click="handleCreateComment()" class="btn btn-primary" type="submit">Kirim</button>
@@ -199,7 +199,7 @@ function cancelReplyEditing(){
                 </form>
             </div>
 
-            <!-- Lihat semua komentar -->
+            <!-- $ Lihat semua komentar -->
             <div>
                 <button @click="handleGetAllComment()" class="btn btn-primary my-4">Lihat komentar</button>
                 <div class="space-y-4">
@@ -229,13 +229,14 @@ function cancelReplyEditing(){
                                 </ul>
                             </div>
                         </div>
-                        <p v-if="!editMode || editModeCommentId != comment.id" class="text-sm">{{ comment.content }}</p>
+                        <!-- $ Konten Komentar -->
+                        <div v-if="!editMode || editModeCommentId != comment.id" class="article" v-html="comment.content"></div>
                         <div v-if="!editMode || editModeCommentId != comment.id" class="flex flex-col justify-between mt-2">
                             <div class="flex">
                                 <div class="flex items-center">
                                     <span class="text-xs text-gray-500">{{ new Date(comment.createdAt.seconds * 1000).toLocaleString() }}</span>
                                     <button @click="openReplyForm(comment.id)" class="btn btn-ghost btn-sm">Balas</button>
-                                </div>
+                                    </div>
                                 <button @click="handleUpvoteComment(comment.id)" :class="{ 'text-blue-500': comment.upvotedUsers.includes(currentUser.uid) }" class="text-sm">Upvote ({{ comment.upvote }})</button>
                             </div>
                             <div>
@@ -261,9 +262,9 @@ function cancelReplyEditing(){
                                     </div>
                                     <div class="mb-4">
                                         <label class="block text-sm font-bold mb-2" for="discussion">Tambah balasan</label>
-                                        <!-- TODO: FUNC: Add live markdown editor support -->
                                         <!-- Lakukan hal sama dengan di prompt komponen exercise -->
-                                        <textarea v-model="newReply" id="discussion" class="textarea textarea-bordered w-full" required></textarea>
+                                        <tiptap v-model="newReply"></tiptap>
+                                        <!-- <textarea v-model="newReply" id="discussion" class="textarea textarea-bordered w-full" required></textarea> -->
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <button @click="handleCreateReply(comment.id)" class="btn btn-primary" type="submit">Kirim</button>
@@ -299,7 +300,8 @@ function cancelReplyEditing(){
                                         </ul>
                                     </div>
                                 </div>
-                                <p v-if="!editModeReply || editModeReplyId != reply.id" class="text-sm">{{ reply.content }}</p>
+                                <!-- $ Konten Reply -->
+                                <p v-if="!editModeReply || editModeReplyId != reply.id" class="article" v-html="reply.content"></p>
                                 <div v-if="!editModeReply || editModeReplyId != reply.id" class="flex flex-col justify-between mt-2">
                                     <div class="flex">
                                         <div class="flex items-center">

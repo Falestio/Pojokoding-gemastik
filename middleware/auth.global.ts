@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "@firebase/auth";
 import { useCurrentUser } from "../composables/useCurrentUser";
 
-// TODO: FUNC: Make the users available before leaving middleware
+// TODO: FUNC: Make the users available before page load (server side)
 export default defineNuxtRouteMiddleware(async (to, from) => {
     if (process.client) {
         const { $auth } = useNuxtApp();

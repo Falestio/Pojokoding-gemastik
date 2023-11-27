@@ -1,11 +1,11 @@
 <script setup>
-import { getAllCoursesForHomepage } from "@/utils/content/getAllCoursesForHomepage";
 
 useHead({
-    title: "Pojokoding"
-})
+    title: "Pojokoding",
+});
 
-const allCourses = await getAllCoursesForHomepage();
+const { pending: allCoursePending, data: allCourses } = await useLazyFetch("/api/content/get-all-courses-for-homepage");
+console.log("All Courses", allCourses.value);
 </script>
 
 <template>
@@ -25,7 +25,10 @@ const allCourses = await getAllCoursesForHomepage();
             </div>
             <div class="flex flex-col gap-6 text-white mt-16">
                 <h3 class="text-2xl font-medium">Rekomendasi Untukmu</h3>
-                <div class="grid grid-cols-3 gap-4">
+                <div v-if="allCoursePending">
+                    <span class="loading loading-bars loading-md"></span>
+                </div>
+                <div v-if="!allCoursePending" class="grid grid-cols-3 gap-4">
                     <template v-for="course in allCourses" :key="course._id">
                         <NuxtLink :to="`/${course.slug.current}`">
                             <div class="card card-compact bg-slate-900 hover:bg-slate-800 shadow-xl">

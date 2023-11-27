@@ -59,5 +59,4 @@ export const getProgressDashboard = async (userId: string) => {
     } else {
         return courseData
     }
-
 };

@@ -47,6 +47,14 @@
     @apply list-decimal list-inside;
 }
 
+.article li p {
+    @apply inline;
+}
+
+.article li {
+    @apply my-2 text-xl leading-7;
+}
+
 .article table {
     @apply w-full text-left table-auto;
 }
@@ -69,4 +77,26 @@
 
 .article pre {
     @apply text-lg p-1 rounded;
+}
+
+.con {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+@media (min-width: 768px) {
+    .con {
+        width: 750px;
+    }
+}
+@media (min-width: 992px) {
+    .con {
+        width: 970px;
+    }
+}
+@media (min-width: 1200px) {
+    .con {
+        width: 1170px;
+    }
 }

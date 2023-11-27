@@ -4,10 +4,10 @@ export const readAllComment = async (articleId: string, startAfterCursor = null)
     const { $db } = useNuxtApp()
     // @ts-ignore   
     const commentsRef = collection($db, "comments")
-    let q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), limit(5));
+    let q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), limit(4));
 
     if (startAfterCursor) {
-        q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), startAfter(startAfterCursor), limit(5));
+        q = query(commentsRef, where("articleId", "==", articleId), orderBy('upvote', 'desc'), startAfter(startAfterCursor), limit(4));
     }
 
     const querySnapshot = await getDocs(q)

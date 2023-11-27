@@ -1,19 +1,54 @@
 <script setup>
-// TODO: FUNC : Sama seperti daftar
-import { userLogin } from '@/utils/user/userLogin' 
+import { userLogin } from "@/utils/user/userLogin";
+import { useToast } from "vue-toastification";
 
+// TODO: Jika user sudah login, halangi dari halaman login 
 useHead({
-    title: "Masuk"
-})
+    title: "Masuk",
+});
 
-const email = ref('')
-const password = ref('')
+const toast = useToast();
 
-async function handleUserLogin(){
-    await userLogin(email.value, password.value)
-    navigateTo('/dashboard')
+const email = ref("");
+const password = ref("");
+const loginLoading = ref(false);
+
+const isFormValid = computed(() => {
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    return email.value.match(emailRegex) && password.value;
+});
+
+async function handleUserLogin() {
+    loginLoading.value = true;
+    if (isFormValid) {
+        try {
+            const loggedIn = await userLogin(email.value, password.value);
+            if (loggedIn) {
+                navigateTo("/dashboard");
+            }
+            loginLoading.value = false;
+        } catch (error) {
+            switch (error.code) {
+                case "auth/invalid-email":
+                    toast.error("Email tidak valid", { timeout: 4000 });
+                    break;
+                case "auth/user-disabled":
+                    toast.error("User sudah dinonaktifkan oleh administrator", { timeout: 4000 });
+                    break;
+                case "auth/user-not-found":
+                    toast.error("User tidak ditemukan", { timeout: 4000 });
+                    break;
+                case "auth/wrong-password":
+                    toast.error("Password salah", { timeout: 4000 });
+                    break;
+                default:
+                    toast.error("Unknown error occured", { timeout: 4000 });
+                    break;
+            }
+            loginLoading.value = false;
+        }
+    }
 }
-// TODO: FUNC : lupa password
 </script>
 
 <template>
@@ -35,7 +70,11 @@ async function handleUserLogin(){
                             </label>
                             <input v-model="password" type="password" placeholder="Kata Sandi" class="input input-bordered input-primary w-full max-w-xs" />
                         </div>
-                        <button type="submit" class="btn btn-primary text-white">Masuk</button>
+                        <div class="text-right">
+                            <NuxtLink to="/auth/reset-password" class="hover:underline">Lupa password?</NuxtLink>
+                        </div>
+                        <button v-if="!loginLoading" :disabled="!isFormValid" type="submit" class="btn btn-primary text-white">Masuk</button>
+                        <button v-if="loginLoading" class="btn btn-primary"><span class="loading loading-bars loading-md text-white"></span></button>
                     </form>
                     <div class="divider">Atau Login Menggunakan</div>
                     <div class="flex flex-col gap-1">
