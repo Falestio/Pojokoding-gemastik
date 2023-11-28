@@ -116,7 +116,6 @@ function handleEmailBlur() {
             <div class="border border-second rounded">
                 <h2 class="bg-slate-800 text-center text-2xl py-2">Daftar Akun Baru</h2>
                 <div class="flex flex-col px-8 py-6 gap-3">
-                    {{ usernameValidated }}
                     <form @submit.prevent="handleRegister()" class="flex flex-col gap-2">
                         <div class="form-control">
                             <label class="label">
