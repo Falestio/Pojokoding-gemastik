@@ -182,7 +182,7 @@ async function handleSaveProgress() {
                 <ul class="p-4 w-60 h-full border-r border-gray-700 text-base-content flex flex-col gap-2 overflow-x-hidden whitespace-normal">
                     <template v-for="content in contentStore.sidebarContent" :key="content._id">
                         <NuxtLink :to="content.slug.current" :class="{ 'text-primary': content.completed }" class="hover:bg-slate-800 p-2 rounded flex items-center">
-                            <Icon v-if="content.completed" name="mdi:checkbox-marked-circle" class="mr-2"></Icon>
+                            <Icon v-if="content.completed" name="mdi:checkbox-marked-circle" class="mr-2 min-w-min"></Icon>
                             <span class="text-lg">
                                 {{ content.displayTitle }}
                             </span>

@@ -11,11 +11,13 @@ export const getContentData = async (contentSlug: string, courseSlug: string) =>
             _id,
             title,
             slug,
-            displayTitle
-        },
+            displayTitle,
+            orderRank,
+        }|order(orderRank asc),
         "languageConfig": languageConfig->{...}
     }`;
     const { data: contentData } = await useSanityQuery(query);
     const content = contentData.value;
+    //@ts-ignore
     return content;
 };

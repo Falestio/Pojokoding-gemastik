@@ -1,7 +1,6 @@
 <script setup>
 import { useContentStore } from "@/stores/content";
 import { useProgressStore } from "@/stores/progress";
-import { storeToRefs } from "pinia";
 
 definePageMeta({ layout: "empty" });
 
@@ -61,4 +60,6 @@ pre {
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
+
+
 </style>

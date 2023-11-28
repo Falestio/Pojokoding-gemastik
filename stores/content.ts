@@ -13,7 +13,6 @@ export const useContentStore = defineStore("content", () => {
     }
 
     function updateSidebarContent(userProgress) {
-        console.log("In Update Sidebar Content, USER PROGRESS:", userProgress)
         if (sidebarContent.value) {
             sidebarContent.value.forEach((item) => {
                 const match = userProgress.some((completedItem) => completedItem.contentId === item._id);

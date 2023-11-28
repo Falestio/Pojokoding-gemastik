@@ -8,7 +8,6 @@ import hljs from "highlight.js";
 // TODO: code line highlihgt
 
 export const renderMarkdown = (markdown: string) => {
-    console.log(markdown)
     const md = markdownIt({
         linkify: true,
         typographer: true,
