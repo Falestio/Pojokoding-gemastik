@@ -151,13 +151,14 @@ async function handleDeleteReview(reviewId) {
 // Navigate user to the latest progress
 async function handleNavigateUserToTheLatestProgress(courseId, courseSlug) {
     const kontenTerakhir = await getLatestUserProgress(currentUser.value.uid, courseId);
-    console.log(courseSlug);
     navigateTo(`/${courseSlug}/${kontenTerakhir.slug.current}`);
 }
 
+const isContinueLearningButtonLoading = ref(false);
+
 // Handle Delete Account
 // TODO: Reauthenticate user before delete account
-async function handleDeleteAccount(){
+async function handleDeleteAccount() {
     await deleteAccount(currentUser.value.uid);
     toast.success("Berhasil menghapus akun", {
         timeout: 2000,
@@ -185,7 +186,7 @@ async function handleDeleteAccount(){
                     <div v-if="usersProgressLoading">
                         <span class="loading loading-bars loading-md"></span>
                     </div>
-                    <div v-else> 
+                    <div v-else>
                         <div v-if="!usersProgress" class="border rounded border-gray-600 px-6 py-4">
                             <p class="text-2xl">Anda belum memulai kursus</p>
                         </div>
@@ -285,10 +286,14 @@ async function handleDeleteAccount(){
                                         </div>
                                     </div>
                                     <button
-                                        @click="handleNavigateUserToTheLatestProgress(progress._id, progress.slug.current)"
+                                        @click="
+                                            isContinueLearningButtonLoading = true;
+                                            handleNavigateUserToTheLatestProgress(progress._id, progress.slug.current);
+                                        "
                                         class="bg-primary px-10 py-1 rounded-sm text-background font-medium text-sm"
                                     >
-                                        Lanjut belajar
+                                        <span> Lanjut belajar </span>
+                                        <span v-if="isContinueLearningButtonLoading" class="loading loading-bars loading-xs ml-1"></span>
                                     </button>
                                 </div>
                             </template>
