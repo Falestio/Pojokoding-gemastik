@@ -176,11 +176,14 @@ async function handleDeleteAccount() {
                 <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Pengaturan</button>
             </div>
             <!-- $ Kursusku -->
+            <!-- TODO: Sertifikat -->
+            <!-- TODO: protected route -->
             <div v-show="activeTab === 'kursusku'" class="flex flex-col gap-3">
                 <div class="mb-4">
                     <p v-if="currentUser" class="text-5xl">👋 Selamat Datang {{ currentUser.displayName }}</p>
                 </div>
 
+                <!-- TODO: perbaiki tampilan -->
                 <h2 class="text-2xl font-medium">Kemajuan Belajar</h2>
                 <div class="flex flex-col gap-3">
                     <div v-if="usersProgressLoading">
@@ -324,12 +327,16 @@ async function handleDeleteAccount() {
             <div v-show="activeTab === 'akunku'">
                 <div class="flex gap-10" v-if="currentUser">
                     <!-- $ Profile Picture Component -->
+                    <!-- TODO: awal masuk gambar tidak terdetect -->
+                    <!-- TODO: pembatasan priveledge untuk yang belum verifikasi  -->
                     <profile-picture-dashboard />
 
                     <!-- $ Profile Information -->
                     <div class="w-full flex flex-col gap-4">
                         <div class="flex flex-col gap-1">
                             <p>Nama:</p>
+                            <!-- TODO: kurang convincing setelah ganti nama -->
+                            <!-- TODO: cek ubah kata sandi -->
                             <div class="flex rounded-lg gap-4">
                                 <input v-model="newName" type="text" class="input input-bordered w-full" />
                                 <button @click="handleChangeName()" class="btn btn-primary">Ubah nama</button>

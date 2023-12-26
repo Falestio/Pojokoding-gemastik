@@ -111,6 +111,7 @@ function handleEmailBlur() {
 </script>
 
 <template>
+    <!-- TODO: Email terkadang tidak terkirim -->
     <div class="flex justify-center items-center bg-background p-8">
         <div class="max-w-sm flex flex-col gap-4">
             <div class="border border-second rounded">
@@ -128,6 +129,7 @@ function handleEmailBlur() {
                                 </label>
                             </div>
                         </div>
+                        <!-- TODO: redesign confirm password -->
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Email</span>

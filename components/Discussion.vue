@@ -187,6 +187,8 @@ const showConfirmDeleteReplyModal = ref(false);
 <template>
     <div>
         <!-- TODO: Standardisasi UI -->
+        <!-- TODO: finish this component -->
+        <!-- TODO: terkadang pesan tidak muncul -->
         <div class="">
             <!-- $ Submit komentar -->
             <div class="divider"></div>

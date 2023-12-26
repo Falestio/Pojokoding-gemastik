@@ -31,6 +31,7 @@ if(process.client && courseData.value){
 </script>
 
 <template>
+    <!-- TODO: Lebih ada spacing lagi antara heading dan text sehingga mudah dibaca, mungkin masukan ke dalam box  -->
     <div class="mt-8">
         <div class="bg-[#191825] con text-white">
             <div class="grid grid-cols-3 gap-4">
@@ -44,8 +45,7 @@ if(process.client && courseData.value){
                         <p>{{ courseData.learningObjectives }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <h2 class="text-2xl">Materi Kursus</h2>
-                        <p>{{ courseData.postCount }} Artikel - {{ courseData.exerciseCount }} Latihan</p>
+                        <h2 class="text-2xl">Daftar Modul</h2>
 
                         <ul class="space-y-4" v-if="courseData.subcourses">
                             <template v-for="subcourse in courseData.subcourses" :key="subcourse.title">
@@ -54,6 +54,7 @@ if(process.client && courseData.value){
                                         {{ subcourse.title }}
                                     </summary>
                                     <div class="collapse-content">
+                                        <!-- TODO: ada berapa latihan dan artikel dalam setiap subcourse  -->
                                         <div v-for="content in subcourse.contents" :key="content.displayTitle" class="card">
                                             <NuxtLink :to="`/${courseData.slug.current}/${content.slug.current}`" class="flex rounded items-center gap-2 p-2 hover:bg-slate-800">
                                                 <Icon v-if="content.contentType == 'exercise'" name="ph:terminal-window" class="text-lg"></Icon>
@@ -73,10 +74,12 @@ if(process.client && courseData.value){
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
+                        <!-- TODO: Jika tidak ada review jangan ditampilkan -->
                         <h2 class="text-2xl">Review</h2>
                         <div v-for="review in allReviewsInCourse" :key="review.id" class="flex flex-col space-y-2 p-4 bg-slate-800 shadow rounded-md mb-4">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
+                                    <!-- TODO: image does not shown -->
                                     <img :src="review.photoUrl" alt="User avatar" class="w-8 h-8 rounded-full" />
                                     <div>
                                         <p class="text-sm font-bold">{{ review.username }}</p>
@@ -92,14 +95,18 @@ if(process.client && courseData.value){
                                         </div>
                                     </div>
                                 </div>
+                                <!-- TODO: diubah menjad "3 days ago..." -->
                                 <p class="text-xs text-gray-500">{{ new Date(review.createdAt.seconds * 1000).toLocaleDateString() }}</p>
                             </div>
                             <p class="text-sm">{{ review.content }}</p>
                         </div>
+                        <!-- TODO: tampilkan loading state -->
                         <button @click="handleGetMoreReviews" class="btn btn-primary">Muat Lebih Banyak</button>
                     </div>
                 </main>
                 <div class="col-span-1">
+                    <!-- TODO: selain gambar dan tombol, tampilkan juga rangkuman dari kursus -->
+                    <!-- TODO: tampilkan progress -->
                     <div class="sticky top-4">
                         <img v-if="courseData.image" :src="courseData.image" alt="gambar" class="bg-slate-400 h-64 w-ful object-cover rounded" />
                         <div class="text-xl">
@@ -108,6 +115,7 @@ if(process.client && courseData.value){
                                     v-if="courseData?.slug?.current && courseData?.subcourses?.[0]?.contents?.[0]?.slug?.current"
                                     :to="`/${courseData.slug.current}/${courseData.subcourses[0].contents[0].slug.current}`"
                                     class="btn btn-primary w-full text-white"
+                                    data-cy="course-page-mulai-belajar"
                                 >
                                     Mulai Belajar
                                 </NuxtLink>

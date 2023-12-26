@@ -117,7 +117,11 @@ async function handleSaveProgress() {
 
 <template>
     <div>
-        <!-- TODO: Penampilkan pesan error kurang jelas -->
+        <!-- TODO: jadikan viewport 100vh -->
+        <!-- TODO: jika ada pesan error jadikan di satu box saja -->
+        <!-- TODO: kecilin navbar -->
+        <!-- TODO: restyle test case -->
+        <!-- TODO: masih banyak edge case yang belum dihandle -->
         <div class="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content flex flex-col p-8">
@@ -125,11 +129,11 @@ async function handleSaveProgress() {
                 <div class="flex">
                     <div class="w-1/2">
                         <div class="mr-4">
-                            <h2 class="text-2xl font-bold mb-4">{{ contentStore.contentData.displayTitle }}</h2>
-                            <div class="article" v-html="promptHtml"></div>
+                            <h2 data-cy="exercise-title" class="text-2xl font-bold mb-4">{{ contentStore.contentData.displayTitle }}</h2>
+                            <div data-cy="exercise-prompt" class="article" v-html="promptHtml"></div>
                         </div>
                         <div class="grid gap-4 mr-4 mt-4">
-                            <div v-for="testCase in testCases" :key="testCase._key" class="rounded-lg shadow-md p-4 relative border border-slate-700">
+                            <div data-cy="exercise-test-case" v-for="testCase in testCases" :key="testCase._key" class="rounded-lg shadow-md p-4 relative border border-slate-700">
                                 <div v-if="testCase.status == 'success'" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                                 <div v-if="testCase.status == 'failed'" class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
                                 <div v-if="testCase.status == 'loading'" class="absolute top-0 left-0 h-2 w-full p-2">
@@ -160,8 +164,8 @@ async function handleSaveProgress() {
                                     </div>
                                 </div>
                                 <div v-if="testCase.status" class="mt-4">
-                                    <span v-if="testCase.status == 'success'" class="badge badge-md badge-success">Berhasil</span>
-                                    <span v-if="testCase.status == 'failed'" class="badge badge-md badge-error">Gagal</span>
+                                    <span data-cy="exercise-success-badge" v-if="testCase.status == 'success'" class="badge badge-md badge-success">Berhasil</span>
+                                    <span data-cy="exercise-failed-badge" v-if="testCase.status == 'failed'" class="badge badge-md badge-error">Gagal</span>
                                 </div>
                             </div>
                         </div>
@@ -169,11 +173,11 @@ async function handleSaveProgress() {
                     <div class="w-1/2">
                         <!-- TODO: Jika user telah mengerjakan latihan, tampilkan status sudah mengerjakan (hasil test yang hijau) -->
                         <!-- TODO: JIka user telah mengerjakan latihan, tampilkan kode di code editor -->
-                        <codemirror :extensions="getExtensions()" v-model="code" :style="{ height: '100%', width: '100%', 'font-size': '18px' }"></codemirror>
+                        <codemirror data-cy="exercise-code-editor" :extensions="getExtensions()" v-model="code" :style="{ height: '100%', width: '100%', 'font-size': '18px' }"></codemirror>
                     </div>
                 </div>
                 <div class="w-full p-4 flex">
-                    <button @click="handleRunTests()" class="btn btn-primary">Submit</button>
+                    <button data-cy="exercise-submit" @click="handleRunTests()" class="btn btn-primary">Submit</button>
                 </div>
                 <Discussion v-if="currentUser" :content-data="contentStore.contentData"></Discussion>
             </div>

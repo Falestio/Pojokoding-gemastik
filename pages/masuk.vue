@@ -57,23 +57,26 @@ async function handleUserLogin() {
             <div class="border border-second rounded">
                 <h2 class="bg-slate-800 text-center text-2xl py-2">Masuk ke akun Anda</h2>
                 <div class="flex flex-col px-8 py-6 gap-3">
+                    <!-- TODO: masuk mengguankan google -->
+                    <!-- TODO: tombol google di redesign ke design resmi -->
+                    <!-- TODO: tombol design tetep tapi disable -->
                     <form @submit.prevent="handleUserLogin()" class="flex flex-col gap-2">
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Email</span>
                             </label>
-                            <input v-model="email" type="email" placeholder="Masukan Email Anda" class="input input-bordered input-primary w-full max-w-xs" />
+                            <input data-cy="masuk-form-email" v-model="email" type="email" placeholder="Masukan Email Anda" class="input input-bordered input-primary w-full max-w-xs" />
                         </div>
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Password</span>
                             </label>
-                            <input v-model="password" type="password" placeholder="Kata Sandi" class="input input-bordered input-primary w-full max-w-xs" />
+                            <input data-cy="masuk-form-password" v-model="password" type="password" placeholder="Kata Sandi" class="input input-bordered input-primary w-full max-w-xs" />
                         </div>
                         <div class="text-right">
                             <NuxtLink to="/auth/reset-password" class="hover:underline">Lupa password?</NuxtLink>
                         </div>
-                        <button v-if="!loginLoading" :disabled="!isFormValid" type="submit" class="btn btn-primary text-white">Masuk</button>
+                        <button data-cy="masuk-submit" v-if="!loginLoading" :disabled="!isFormValid" type="submit" class="btn btn-primary text-white">Masuk</button>
                         <button v-if="loginLoading" class="btn btn-primary"><span class="loading loading-bars loading-md text-white"></span></button>
                     </form>
                     <div class="divider">Atau Login Menggunakan</div>

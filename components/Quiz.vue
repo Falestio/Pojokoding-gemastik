@@ -107,43 +107,48 @@ async function handleAddProgress() {
             </div>
         </div>
         <div v-else>
+            <!-- TODO: hanya bisa diakses oleh orang yang login -->
             <!-- $ Sebelum Quiz Dimulai -->
             <div v-if="!quizStarted">
                 <h2 class="text-3xl">Quiz</h2>
                 <p>Selesaikan quiz untuk menyimpan kemajuan</p>
                 <p>Jumlah pertanyaan: {{ renderedQuizData.length }}</p>
-                <button @click="startQuiz" class="btn btn-primary mt-4">Mulai Quiz</button>
+                <button @click="startQuiz" data-cy="article-mulai-quiz" class="btn btn-primary mt-4">Mulai Quiz</button>
             </div>
             <!-- $ Quiz Sedang Dilaksanakan -->
             <div v-else-if="questionIndex < renderedQuizData.length && !quizDone">
-                <span>Pertanyaan {{ questionIndex + 1 }}/{{ renderedQuizData.length }}</span>
-                <div class="article" v-html="renderedQuizData[questionIndex].question"></div>
+                <span data-cy="quiz-nomor-pertanyaan">Pertanyaan {{ questionIndex + 1 }}/{{ renderedQuizData.length }}</span>
+                <div data-cy="quiz-pertanyaan" class="article" v-html="renderedQuizData[questionIndex].question"></div>
                 <div v-if="correctChoiceSelected || wrongChoiceSelected" class="bg-slate-800 p-4 rounded">
-                    <p v-if="wrongChoiceSelected" class="text-red-500">Salah</p>
-                    <p v-if="correctChoiceSelected" class="text-green-500">Benar</p>
-                    <div class="article" v-html="explanation"></div>
+                    <p data-cy="quiz-jawaban-salah" v-if="wrongChoiceSelected" class="text-red-500">Salah</p>
+                    <p data-cy="quiz-jawaban-benar" v-if="correctChoiceSelected" class="text-green-500">Benar</p>
+                    <div data-cy="penjelasan" class="article" v-html="explanation"></div>
                 </div>
 
                 <div v-for="(choice, index) in renderedQuizData[questionIndex].choices" :key="choice._key" class="mt-4">
-                    <label class="w-full h-full">
+                    <label data-cy="quiz-choice" class="w-full h-full">
                         <div class="p-4 rounded border border-gray-700 mb-2 cursor-pointer flex items-center gap-4" :class="{ 'bg-gray-700': wrongChoiceSelected && selectedAnswer === index }">
                             <input class="radio" type="radio" v-model="selectedAnswer" :value="index" :disabled="wrongChoiceSelected && selectedAnswer === index" />
-                            <div class="article" v-html="choice.text"></div>
+                            <div data-cy="quiz-choice-text" class="article" v-html="choice.text"></div>
                         </div>
                     </label>
                 </div>
                 <div class="flex gap-4 justify-end mt-4">
-                    <button v-if="selectedAnswer !== null && !correctChoiceSelected" @click="checkAnswer" class="btn btn-primary mr-4">Cek jawaban</button>
-                    <button v-if="correctChoiceSelected && questionIndex < renderedQuizData.length - 1" @click="nextQuestion" class="btn btn-primary">Pertanyaan selanjutnya</button>
-                    <button v-if="correctChoiceSelected && questionIndex === renderedQuizData.length - 1" @click="finishQuiz" class="btn btn-primary">Selesai</button>
+                    <button v-if="selectedAnswer !== null && !correctChoiceSelected" @click="checkAnswer" class="btn btn-primary mr-4" data-cy="quiz-cek-jawaban">Cek jawaban</button>
+                    <button v-if="correctChoiceSelected && questionIndex < renderedQuizData.length - 1" @click="nextQuestion" class="btn btn-primary" data-cy="quiz-pertanyaan-selanjutnya">Pertanyaan selanjutnya</button>
+                    <!-- TODO: ketika jawaban terakhir berhasil dijawab maka tombol di skip, user tidak bisa membaca pembahasan soal terakhir -->
+                    <button v-if="correctChoiceSelected && questionIndex === renderedQuizData.length - 1" @click="finishQuiz" class="btn btn-primary" data-cy="quiz-selesai">Selesai</button>
                 </div>
             </div>
             <!-- $ Quiz Selesai -->
             <div v-else-if="quizDone" class="my-4">
+                <!-- TODO: tambahkan icon centang -->
                 <span class="text-3xl text-success mb-8">Quiz Selesai!</span>
                 <div class="flex flex-col gap-4">
+                    <!-- TODO: Antar pertanyaan ada pemisah -->
                     <template v-for="(question, index) in renderedQuizData" :key="question._key">
                         <div>
+                            <!-- TODO: tidak kelihatan kalau ini heading -->
                             <span class="text-lg">Pertanyaan {{ index + 1 }}</span>
                             <span class="article" v-html="question.question"></span>
                         </div>

@@ -1,4 +1,5 @@
 <template>
+    <!-- TODO: Belum optimal fitur nya -->
     <div class="border border-slate-400 rounded">
         <div class="border-b border-slate-400">
             <div v-if="editor" class="flex flex-wrap gap-2 p-2 tiptap-buttons">

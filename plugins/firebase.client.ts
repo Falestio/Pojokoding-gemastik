@@ -1,7 +1,8 @@
-import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getAnalytics } from "firebase/analytics";
 
 export default defineNuxtPlugin((nuxtApp) => {
     const config = {
@@ -10,17 +11,20 @@ export default defineNuxtPlugin((nuxtApp) => {
         projectId: "pojokoding-test",
         storageBucket: "pojokoding-test.appspot.com",
         messagingSenderId: "323633569210",
-        appId: "1:323633569210:web:932d505cac802fb4599183"
-    }
-    
-    const app = initializeApp(config)
-    const auth = getAuth(app) 
-    const db = getFirestore(app)
-    const storage = getStorage(app)
+        appId: "1:323633569210:web:932d505cac802fb4599183",
+        measurementId: "G-SLBM9WZBRV",
+    };
 
-    console.log("Firebase client initialized")
+    const app = initializeApp(config);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const analytics = getAnalytics(app);
 
-    nuxtApp.provide("auth", auth)
-    nuxtApp.provide("db", db)
-    nuxtApp.provide("storage", storage)
-})
+    console.log("Firebase client initialized");
+
+    nuxtApp.provide("auth", auth);
+    nuxtApp.provide("db", db);
+    nuxtApp.provide("storage", storage);
+    nuxtApp.provide("analytics", analytics);
+});

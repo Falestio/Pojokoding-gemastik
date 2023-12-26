@@ -10,16 +10,20 @@ console.log("All Courses", allCourses.value);
 
 <template>
     <div>
+        <!-- TODO: add animation -->
         <main class="con">
             <div class="py-12">
                 <div class="flex items-center gap-20">
                     <div class="gap flex flex-col gap-3">
                         <div class="">
+                            <!-- TODO: ganti copywriting -->
                             <h2 class="text-[48px] font-semibold text-white">Selamat Datang di Pojokoding</h2>
                             <p class="text-white">Belajar tentang pengrograman tanpa mengeluarkan uang sepeser pun. Daftar sekarang!</p>
                         </div>
+                        <!-- TODO: Hilangkan tombol daftar jika sudah login -->
                         <NuxtLink to="/daftar" class="btn btn-primary">Daftar</NuxtLink>
                     </div>
+                    <!-- TODO: ganti img -->
                     <img src="@/assets/img/binary-code.png" alt="binary-code" class="hidden lg:block" />
                 </div>
             </div>
@@ -43,7 +47,7 @@ console.log("All Courses", allCourses.value);
                 </div>
             </div>
             <div class="flex flex-col gap-6 text-white mt-16">
-                <h3 class="text-2xl font-medium">Testimoni dari alumni kursus</h3>
+                <h3 class="text-2xl font-medium">Testimoni Dari Alumni</h3>
                 <div class="flex flex-col gap-6">
                     <div class="flex gap-10 border border-primary">
                         <img src="@/assets/img/zull.jpg" alt="" class="w-60 h-60 object-cover" />

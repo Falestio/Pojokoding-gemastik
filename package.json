@@ -49,6 +49,7 @@
     "cheerio": "^1.0.0-rc.12",
     "codemirror": "^6.0.1",
     "cropperjs": "^1.6.0",
+    "cypress": "^13.6.1",
     "daisyui": "^3.0.3",
     "file-type": "^18.5.0",
     "firebase": "^9.22.1",

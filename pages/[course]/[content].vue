@@ -38,6 +38,7 @@ watch(currentUser, async (newValue, oldValue) => {
     <div>
         <!-- TODO: Tampilkan subcourses pada sidebar -->
         <!-- TODO: Jumlah artikel dan latihan dijadikan dynamic -->
+        <!-- TODO: REFACTOR -->
         <TheNavbar></TheNavbar>
         <Article v-if="contentStore.contentData.contentType == 'post'"></Article>
         <Exercise v-if="contentStore.contentData.contentType == 'exercise'"></Exercise>

@@ -30,8 +30,8 @@ const isContentCompleted = computed(() => {
                 <div class="w-[800px]">
                     <h1 class="text-5xl mb-4">{{ contentStore.contentData.displayTitle }}</h1>
                     <div class="w-full p-5 mb-4 bg-slate-900 rounded">
-                        <h1 class="text-2xl font-bold mb-4">Daftar Isi</h1>
-                        <ul class="space-y-2">
+                        <h1 class="text-2xl font-bold mb-4" data-cy="daftar-isi-title">Daftar Isi</h1>
+                        <ul class="space-y-2" data-cy="daftar-isi-list">
                             <li v-for="item in toc" :key="item.slug" :class="item.lvl === 3 ? 'pl-4' : ''">
                                 <a :href="`#${item.slug}`" class="text-primary hover:underline">
                                     {{ item.content }}
@@ -39,6 +39,7 @@ const isContentCompleted = computed(() => {
                             </li>
                         </ul>
                     </div>
+                    <!-- TODO: percantik code block -->
                     <article v-html="renderedArticle" class="article"></article>
                     <Quiz v-if="quizData" :is-content-completed="isContentCompleted"></Quiz>
                     <Discussion v-if="currentUser" :content-data="contentStore.contentData"></Discussion>
@@ -49,7 +50,10 @@ const isContentCompleted = computed(() => {
                     </div>
                 </div>
             </div>
-
+            <!-- TODO: cek sidebar scroll -->
+            <!-- TODO: sidebar dijadikan komponen sendiri -->
+            <!-- TODO: tampilkan subcourses di sidebar -->
+            <!-- TODO: active link, highlight konten yang sedang di kunjungi di sidebar -->
             <div class="drawer-side">
                 <label for="article-sidebar" class="drawer-overlay"></label>
                 <ul class="p-4 w-60 h-full border-r border-gray-700 bg-slate-900 text-base-content flex flex-col gap-2 overflow-x-hidden whitespace-normal">
