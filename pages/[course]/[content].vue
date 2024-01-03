@@ -32,10 +32,14 @@ watch(currentUser, async (newValue, oldValue) => {
         await handleGetUsersProgress();
     }
 });
+
+const ucapanSelamat = useState("ucapanSelamat", () => true)
 </script>
 
 <template>
-    <div>
+    <div 
+    :class="{'h-screen overflow-hidden': ucapanSelamat}"
+    >
         <!-- TODO: Tampilkan subcourses pada sidebar -->
         <!-- TODO: Jumlah artikel dan latihan dijadikan dynamic -->
         <!-- TODO: REFACTOR -->
@@ -50,6 +54,17 @@ watch(currentUser, async (newValue, oldValue) => {
         <pre>
             {{ contentStore.contentData }}
         </pre> -->
+        <div class="h-screen absolute top-0 left-0 bg-neutral/60 w-screen flex justify-center pt-[18%]" v-if="ucapanSelamat">
+
+            <div class="bg-base-100 px-4 py-2 rounded-md border border-secondary h-fit">
+                <h3 class="text-3xl mb-2">😮👌</h3>
+                <p>Selamat! Anda telah menyelesaikan modul [nama_modul]</p>
+                <p>kerenn, ayoo lanjutkan belajar</p>
+                <div class="flex justify-end">
+                    <button class="px-4 py-1 rounded-md border border-secondary" @click="ucapanSelamat=false">Oke</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

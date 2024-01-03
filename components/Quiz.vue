@@ -41,6 +41,7 @@ function startQuiz() {
 
 function finishQuiz() {
     quizDone.value = true;
+
     // Add more logic if needed, e.g. saving the quiz result
 }
 

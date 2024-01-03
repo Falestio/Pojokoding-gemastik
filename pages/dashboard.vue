@@ -17,6 +17,8 @@ import { deleteAccount } from "@/utils/user/deleteAccount";
 const toast = useToast();
 const currentUser = useCurrentUser();
 const activeTab = ref("kursusku");
+const curAchievement = ref("");
+
 
 definePageMeta({
     layout: "nofooter",
@@ -170,10 +172,14 @@ async function handleDeleteAccount() {
 <template>
     <div>
         <div class="bg-[#191825] py-8 flex flex-col gap-6 h-full con">
-            <div class="tabs">
-                <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursus</button>
-                <div class="divider divider-horizontal"></div>
-                <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Pengaturan</button>
+            <div class="flex justify-between">
+                <div class="flex ">
+                    <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'kursusku' }" @click="activeTab = 'kursusku'">Kursus</button>
+                    <div class="divider divider-horizontal"></div>
+                    <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'akunku' }" @click="activeTab = 'akunku'">Pengaturan</button>
+                </div>
+                <button class="btn btn-ghost tab" :class="{ 'tab-active, text-primary': activeTab === 'achievement' || activeTab === 'detail-achievement' }" @click="activeTab = 'achievement'">Pencapaian</button>
+
             </div>
             <!-- $ Kursusku -->
             <!-- TODO: Sertifikat -->
@@ -303,7 +309,7 @@ async function handleDeleteAccount() {
                         </div>
                     </div>
                 </div>
-                <h2 class="text-2xl font-medium">Rekomendasi Kursus</h2>
+                <!-- <h2 class="text-2xl font-medium">Rekomendasi Kursus</h2>
                 <div class="grid grid-cols-3 gap-4">
                     <div v-if="recommendedCoursesPending">
                         <span class="loading loading-bars loading-md"></span>
@@ -321,6 +327,16 @@ async function handleDeleteAccount() {
                             </div>
                         </NuxtLink>
                     </template>
+                </div> -->
+                <h2 class="text-2xl font-medium">Misi Harian</h2>
+                <div class="grid grid-cols-3 gap-x-4 gap-y-3">
+                    <div v-for="i in 4" class="flex items-center border border-gray-600 rounded-md justify-between px-3 py-1">
+                        <div class="">
+                            <h3 class="text-lg font-semibold">List pada Python</h3>
+                            <p>Tingkat Kesulitan: Pemula</p>
+                        </div>
+                        <button class="bg-primary text-base-100 h-fit px-3 py-1 rounded-sm">Kerjakan</button>
+                    </div>
                 </div>
             </div>
             <!-- $ Akunku -->
@@ -368,6 +384,41 @@ async function handleDeleteAccount() {
                             <p>Hapus Akun</p>
                             <NuxtLink to="/auth/reset-password" class="btn btn-primary max-w-fit">Ubah kata sandi</NuxtLink>
                         </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div v-show="activeTab === 'achievement'">
+                <div class="">
+                    <h1 class="text-3xl">Daftar Pencapaian</h1>
+                    <div class="grid grid-cols-2 gap-2 gap-x-6 gap-y-4 mt-3">
+                        <div v-for="i in 3" class="border border-secondary flex items-center w-full px-7 py-2 rounded-md justify-between">
+                            <div class="">
+                                <h3>Pemula Pemrogram</h3>
+                                <p>Pengakuan atas penyelesaian pertama kali modul dasar</p>
+                            </div>
+                            <button class="px-6 py-1 bg-primary text-neutral h-fit rounded-md" @click="activeTab = 'detail-achievement'">Lihat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-show="activeTab === 'detail-achievement'">
+                <div class="">
+                    <div class="w-fit flex gap-1 items-center hover:bg-secondary/10 transition-colors px-4 py-1 rounded-full cursor-pointer" @click="activeTab = 'achievement'">
+                        <Icon name="material-symbols:arrow-back-rounded" class="text-xl" />
+                        <p>Daftar Pencapaian</p>
+                    </div>
+                    <div class="border-secondary border px-6 py-2 rounded-md mt-4">
+                        <div class="">
+                            <h3 class="text-xl font-semibold">Pemula Pemrogram</h3>
+                            <p>Pengakuan atas penyelesaian pertama kali modul dasar</p>
+                            <p>Tanggal diperoleh: 27 Desember 2023</p>
+                            <p>Tingkat kesulitan: Pemula</p>
+                        </div>
+                        <div class="mt-3">
+                            <p>Cara memperoleh:</p>
+                            <p>Menyelesaikan satu modul tingkat pemula</p>
+                        </div>
                     </div>
                 </div>
             </div>
